@@ -1,0 +1,297 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<section class="tournament">
+   <article class="tournament__info info-tournament _anim-item">
+      <div class="info-tournament__image">
+         {% if tour.photo %}
+         <picture>
+            <source srcset="{{ tour.photo.url }}" type="image/webp"  ><img src="{{ tour.photo.url }}" alt="" class="info-tournament__img disabled">
+         </picture>
+         {% else %}
+         <picture>
+            <source srcset="{% static 'main/img/tournaments/02.webp' %}" type="image/webp"><img class="info-tournament__img disabled"
+               src="{% static 'main/img/tournaments/02.webp' %}" alt="">
+         </picture>
+         {% endif %}
+         <div class="info-tournament__description">
+            <button type="button" class="info-tournament__button">
+               <i></i>
+            </button>
+            <div class="info-tournament__content">
+               <h2 class="info-tournament__title">{{ tour.title }}</h2>
+               <div class="info-tournament__items">
+                  <div class="info-tournament__item"><span>Тип:</span>{{ tour.get_typo_str }}</div>
+                  <div class="info-tournament__item"><span>Режим:</span>{{ tour.mode }}</div>
+                  <div class="info-tournament__item"><span>Дата:</span>{{ tour.get_date }}</div>
+                  <div class="info-tournament__item"><span>Места:</span> 
+                     {% if players %} {{players.total}}
+                     {% else %} {{through_model.total}} {% endif %}
+
+                     / {{ tour.places }}
+                  </div>
+                  <div class="info-tournament__item">
+                     <span>Статус:</span><div class="info-tournament__status info-tournament__status_{{ tour.status.code }}">{{ tour.status }}</div>
+                  </div>
+                  <div class="info-tournament__item info-tournament__item_vertical">
+                     <span>Описание</span>
+                     {{ tour.description }}
+                  </div>
+                  <div class="info-tournament__item info-tournament__item_vertical">
+                     <span>Правила</span>
+                     {{ tour.rules|safe }}
+                  </div>
+               </div>
+               <form action="{{ tour.get_absolute_url }}" class="info-tournament__form">
+                  {% csrf_token %}
+                  <input type="hidden" value="{{ tour.typo }}" name="typo">
+                  {% if tour.check_is_started %}
+                     <div class="info-tournament__note">Нельзя покинуть турнир после его начала</div>
+                  {% elif tour.check_is_closed %}
+                     <div class="info-tournament__note">Удаление участников произойдет через некоторое время после закрытия турнира</div>
+                  {% elif players %}
+                     {% if not user.is_authenticated %}
+                        <div class="info-tournament__note">Для участия в турнире необходимо войти в аккаунт или зарегистрироваться.</div>
+                        <button type="submit" class="info-tournament__form-button _authorize">Авторизоваться</button>
+
+                     {% elif user in players.data %}
+                        <button type="submit" class="info-tournament__form-button disabled _unroll">Не участвовать</button>
+
+                     {% elif user.limit.tournaments <= self_user_tours %}
+                        <div class="info-tournament__note">Вы привисили лимит участий в турнире. Максимум: {{self_user_tours}}</div>
+
+                     {% elif tour.places <= players.total %}
+                        <button type="submit" class="info-tournament__form-button disabled">Все места заняты</button>
+
+                     {% else %}
+                        <button type="submit" class="info-tournament__form-button">Участвовать</button>
+
+                     {% endif %}
+                  {% else %}
+                     {% if not user.is_authenticated %}
+                        <div class="info-tournament__note">Для участия в турнире необходимо войти в аккаунт или зарегистрироваться.</div>
+                        <button type="submit" class="info-tournament__form-button _authorize">Авторизоваться</button>
+                     {% elif through_model.is_self_team_playing and through_model.is_user_leader %}
+                        <button type="submit" class="info-tournament__form-button disabled _unroll">Не участвовать</button>
+
+                     {% elif not through_model.is_user_leader %}
+                        <div class="info-tournament__note">Чтобы учавствовать в турнире, лидер вашей команды должен подать заявку.</div>
+
+                     {% elif tour.places <= through_model.total %}
+                        <button type="submit" class="info-tournament__form-button disabled">Все места заняты.</button>
+
+                     {% elif through_model.is_enough_players %}
+                     
+                     <button type="submit" class="info-tournament__form-button">Участвовать</button>
+
+                     {% elif through_model.is_less_players %}
+                     <button type="submit" class="info-tournament__form-button disabled">В вашей команде недостаточно игроков.</button>
+
+                     {% else %}
+                     <div class="info-tournament__note">В вашей команде больше {{ tour.typo }} игроков. Выберите участвующих.</div>
+                     <ul class="info-tournament__checkboxes">
+                        {% for player in user.team.players.all %}
+                        <li class="info-tournament__checkbox-item">
+                           <input type="checkbox" class="info-tournament__checkbox-input" name="players" id="player{{ player.pk }}"
+                              value="{{ player.pk }}">
+                           <label class="info-tournament__checkbox-label" for="player{{ player.pk }}">
+                              <div class="info-tournament__nickname">{{ player.nickname }}</div>
+                              <div class="info-tournament__wins">{{ player.gold|add:player.silver|add:player.bronze }}<i class="_icon-win"></i></div>
+                           </label>
+                        </li>
+                        {% endfor %}
+                     </ul>
+                     <button type="submit" class="info-tournament__form-button">Участвовать</button>
+                     {% endif %}
+                  {% endif %}
+               </form>
+            </div>
+         </div>
+      </div>
+   </article>
+   {% if players.data %}
+   <div class="tournament__participants participants-tournament _anim-item">
+      <h3 class="participants-tournament__title title _anim-item">Участники</h3>
+      <ul class="participants-tournament__items aside-open">
+         {% for player in players.data %}
+         <li class="participants-tournament__item _table-item">
+            <a href="{{ player.get_absolute_url }}" class="participants-tournament__avatar">
+					{% if player.photo %}
+					<picture>
+						<source srcset="{{ player.photo.url }}" type="image/webp"><img src="{{ player.photo.url }}"
+							alt="">
+					</picture>
+					{% else %}
+					<picture>
+						<source srcset="{% static 'main/img/header/profile.webp' %}" type="image/webp"><img
+							src="{% static 'main/img/header/profile.png' %}" alt="">
+					</picture>
+					{% endif %}
+            </a>
+            <div class="participants-tournament__data">{{ player.nickname }}</div>
+            <div class="participants-tournament__data participants-tournament__data_name">
+               {% if player.name %} {{ player.name}}
+					{% else %} - {% endif %}
+            </div>
+            <div class="participants-tournament__data">
+               {% if player.clan %} {{ player.clan}}
+					{% else %} - {% endif %}
+            </div>
+            <div class="participants-tournament__data participants-tournament__data_win">{{ player.gold|add:player.silver|add:player.bronze }} <i class="_icon-win"></i>
+            </div>
+         </li>
+         {% endfor %}
+      </ul>
+   </div>
+   {% endif %}
+
+   {% if through_model.fields %}
+   <div class="tournament__teams teams-tournament _anim-item">
+      <h3 class="teams-tournament__title title _anim-item">Команды</h3>
+      <ul data-spollers data-one-spoller class="teams-tournament__items aside-open">
+         {% for field in through_model.fields %}
+         <li class="teams-tournament__item _table-item">
+            <div data-spoller class="teams-tournament__header">
+               <div class="teams-tournament__data teams-tournament__data_team">{{ field.team.name }}</div>
+               <div class="teams-tournament__data teams-tournament__data_leader">
+                  <span>Leader:</span>{{ field.team.leader }}
+               </div>
+               <div class="teams-tournament__data teams-tournament__data_online">{{  field.particapants.count }}/5<i class="_icon-person"></i></div>
+               <div class="teams-tournament__data teams-tournament__data_win">{{ field.summ }} <i class="_icon-win"></i></div>
+            </div>
+            <div class="teams-tournament__content">
+               <ul class="participants-tournament__items">
+                  {% for player in field.particapants.all %}
+                  <li class="participants-tournament__item">
+                     <a href="{{ player.get_absolute_url }}" class="participants-tournament__avatar">
+                        {% if player.photo %}
+                        <picture>
+                           <source srcset="{{ player.photo.url }}" type="image/webp"><img src="{{ player.photo.url }}"
+                              alt="">
+                        </picture>
+                        {% else %}
+                        <picture>
+                           <source srcset="{% static 'main/img/header/profile.webp' %}" type="image/webp"><img
+                              src="{% static 'main/img/header/profile.png' %}" alt="">
+                        </picture>
+                        {% endif %}
+                     </a>
+                     <div class="participants-tournament__data">{{ player.nickname }}</div>
+                     <div class="participants-tournament__data participants-tournament__data_name">
+                        {% if player.name %} {{ player.name}}
+                        {% else %} - {% endif %}
+                     </div>
+                     <div class="participants-tournament__data">
+                        {% if player.clan %} {{ player.clan}}
+                        {% else %} - {% endif %}
+                     </div>
+                     <div class="participants-tournament__data participants-tournament__data_win">{{ player.gold|add:player.silver|add:player.bronze }} <i
+                           class="_icon-win"></i></div>
+                  </li>
+                  {% endfor %}
+               </ul>
+            </div>
+         </li>
+         {% endfor %}
+      </ul>
+   </div>
+   {% endif %}
+
+   {% if tour.table %}
+   <div class="tournament__container">
+      <h3 class="table-tournament__title title _anim-item">Турнирная таблица</h3>
+      {% if user.is_superuser %}
+      <div class="tournament__edit edit _anim-item">
+         <div class="edit__panel">
+            <div class="edit__group">
+               <input type="checkbox" id="editBtn" name="edit" class="edit__btn">
+               <label for="editBtn" class="edit__label">Редактировать</label>
+            </div>
+            <div class="edit__save" data-url="{% url 'table' tour.slug %}">Сохранить</div>
+         </div>
+         <div class="edit__tips">
+            <p class="edit__tip"><span class="edit__head">Двойное нажатие</span> <span class="edit__content">-
+                  используйте для удаления участника (удалить участника в 1-ом
+                  столбце возможно только через админ панель).</span></p>
+            <p class="edit__tip"><span class="edit__head">Enter/Tab</span> <span class="edit__content">-
+                  переключение между полей для изменения счета у каждого игрока.</span></p>
+            <p class="edit__tip"><span class="edit__head">Нажатие на игрока</span> <span class="edit__content">- игрок
+                  выделится оранжевым цветом после этого кликом по
+                  выделенной ячейке его можно будет перенести.</span></p>
+            <p class="edit__tip"><span class="edit__head">Сохранить</span><span class="edit__content">-
+                  после сохранения новые данные отправяться на сервер. Это может занять какое-то
+                  время.</span></p>
+         </div>
+      </div>
+      {% endif %}
+      <div class="tournament__table tour-table _anim-item">
+         <div class="tour-table__body" id="zoom">
+            <input type="text" class="score-edit" name="edit" value="">
+         </div>
+         <div class="tour-table__info table-info">
+            <div class="table-info__scale table-scale">
+               <i class="table-scale__reset"></i>
+               <div class="table-scale__text">100%</div>
+            </div>
+            <div class="table-info__body">
+               <div class="table-info__content">
+                  <p class="table-info__item"><span>Ctrl+Колесико</span> - зум таблицы</p>
+                  <p class="table-info__item"><span>LMB+Движение</span> - перемещениие таблицы</p>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   {% endif %}
+</section>
+
+
+{% endblock %}
+
+{% block tours %}
+{% endblock %}
+
+{% block extrapopups %}
+<div class="popup" id="confirmLeaveTournamentPopup">
+	<div class="popup__body">
+		<div class="popup__content">
+			<a href="" class="popup__close close-popup"></a>
+			<h4 class="popup__title">Уведомление</h4>
+			<form action="#" class="popup__form">
+				<div class="popup__items">
+					<div class="popup__message">
+						<p>Вы уверены что хотите покинуть турнир?</p>
+					</div>		
+				</div>
+				<div class="popup__buttons">
+					<div class="popup__button">
+						<button type="submit" class="popup__btn popup__btn-agree  btn">ДА</button>
+					</div>
+					<div class="popup__button">
+						<button type="button" class="popup__btn btn close-popup">НЕТ</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="popup" id="notifyPopup">
+   <div class="popup__body">
+      <div class="popup__content">
+         <a href="" class="popup__close close-popup"></a>
+         <div class="popup__title">Уведомление</div>
+         <div class="popup__message">
+            <p></p>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}
+
+{% block extrascripts %}
+   {{ tour.table|json_script:"data" }}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+
+{% block content %}
+	<section class="current-news aside-open">
+		<div class="current-news__body _anim-item">
+			<div class="current-news__image">
+				{% if new.image %}
+				<source srcset="{{ new.image.url }}" type="image/webp"><img src="{{ new.image.url }}" alt="">
+				{% else %}
+				<source srcset="{% static 'main/img/aside/01.webp' %}" type="image/webp"><img src="{% static 'main/img/aside/01.jpg' %}" alt="">
+				{% endif %}
+			</div>
+			<div class="current-news__info">
+				<h2 class="current-news__title">{{ new.title }}</h2>
+				<div class="current-news__text">
+					{{ new.content|safe }}
+				</div>
+				{% if new.data %}
+				<div class="current-news__file">
+					<i class="_icon-file"></i>
+					<a href="{{ new.data.url }}" class="current-news__file-link">Закрепленный файл</a>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</section>
+
+{% endblock %}
+
+{% block news %}
+	<!-- Удаляем блок с новостью -->
+{% endblock %}

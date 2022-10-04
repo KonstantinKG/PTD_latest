@@ -1,0 +1,55 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="about">
+	<div class="about-swiper swiper _anim-item">
+		<div class="about-swiper__wrapper swiper-wrapper">
+			{% if page.video %}
+			<div data-swiper-autoplay="5000" class="about-swiper__slide swiper-slide">
+				<div class="about-swiper__image">
+					<video autoplay preload="auto" muted controls poster="{%  static 'main/img/video/preview-video.jpg' %}"
+						class="about-swiper__item">
+						<source src="{{ page.video.url }}">
+					</video>
+				</div>
+			</div>
+			{% endif %}
+			{% for photo in page.photos.all %}
+			<div class="about-swiper__slide swiper-slide">
+				<div class="about-swiper__image">
+					<picture>
+						<source data-srcset="{{ photo.photo.url }}" >
+						<img src="{{  photo.photo.url }}" class="swiper-lazy" alt="">
+					</picture>
+					<div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		<div class="swiper-pagination"></div>
+	</div>
+	<div class="about__content">
+		<h1 class="about__title  _anim-item">Немного о нас</h1>
+		<div class="about__info">
+			<p class="about__item _anim-item">
+				{{ page.para1 }}
+			</p>
+			<p class="about__item _anim-item">
+				{{ page.para2 }}
+			</p>
+		</div>
+	</div>
+
+	<!-- Если пользователь авторизован ему выведится поп ап с уведомлением иначе с регистрацией -->
+	{% if not user.is_authenticated %}
+	<a href="#mainPopup" class="about__btn btn popup-link _anim-item">Присоединяйся</a>
+	{% else %}
+	<a href="#notifyPopup" class="about__btn btn popup-link _anim-item">Присоединяйся</a>
+	{% endif %}
+</section>
+{% endblock %}
+
+{% block tours %}
+<!-- Удаляем блок с турнирами -->
+{% endblock %}

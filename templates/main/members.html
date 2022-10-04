@@ -1,0 +1,111 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+
+{% block content %}
+	<section class="members">
+		<div class="members__leaders aside-open">
+			{% for hrank in hranks %}
+			<div class="members__leader">
+				<a href="{{ hrank.get_absolute_url }}" class="members__avatar _anim-item">
+					{% if hrank.photo %}
+					<picture>
+						<source srcset="{{ hrank.photo.url }}" type="image/webp"><img src="{{ hrank.photo.url }}"
+							alt="">
+					</picture>
+					{% else %}
+					<picture>
+						<source srcset="{% static 'main/img/header/profile.webp' %}" type="image/webp"><img
+							src="{% static 'main/img/header/profile.png' %}" alt="">
+					</picture>
+					{% endif %}
+				</a>
+				<div class="members__data members__data_nickname _anim-item">{{ hrank.nickname}}</div>
+				<div class="members__data members__data_name _anim-item">
+					{% if hrank.name %} {{ hrank.name}}
+					{% else %} - {% endif %}
+				</div>
+				<div class="members__data members__data_post _anim-item">
+					{% if hrank.position %} {{ hrank.position.name}}
+					{% else %} Отсутствует {% endif %}
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		{% if clans %}
+		<div class="members__clan clan _anim-item">
+			{% for clan in clans %}
+				<div class="clan__header">
+					<h3 class="clan__title">{{clan.name}}</h3>
+					<div class="clan__total-online">{{clan.total}} / {{ clan.max }}</div>
+				</div>
+				
+				<ol class="clan__items aside-open">
+					{% for user in clan.users %}
+					<li class="clan__item _table-item">
+							<div class="clan__info">
+								<a href="" class="clan__data clan__data_nickname">{{ user.nickname }}</a>
+								<div class="clan__data clan__data_name">
+									{% if user.name %} {{ user.name}}
+									{% else %} - {% endif %}
+								</div>
+								<div class="clan__data clan__data_post">
+									{% if user.position %} {{ user.position.name}}
+									{% else %} Отсутствует {% endif %}
+								</div>
+							</div>
+							{% if user.is_online %}
+							<div class="clan__online clan__online_on">on</div>
+							{% else %}
+							<div class="clan__online clan__online_off">off</div>
+							{% endif %}
+					</li>
+					{% endfor %}
+				</ol>
+				
+			{% endfor %}
+		</div>
+		{% endif %}
+
+		<div class="members__contacts contacts">
+			<h3 class="contacts__title title _anim-item">Помощь по вступлению</h3>
+			<ul class="contacts__items">
+				{% for user in staff %}
+				<li class="contacts__item _anim-item">
+					<div class="contacts__data">
+						<a href="{{ user.get_absolute_url }}" class="contacts__avatar">
+							{% if user.photo %}
+							<picture>
+								<source srcset="{{ user.photo.url }}" type="image/webp"><img src="{{ user.photo.url }}"
+									alt="">
+							</picture>
+							{% else %}
+							<picture>
+								<source srcset="{% static 'main/img/header/profile.webp' %}" type="image/webp"><img
+									src="{% static 'main/img/header/profile.png' %}" alt="">
+							</picture>
+							{% endif %}
+						</a>
+						<div class="contacts__info">
+							<div class="contacts__nickname">{{ user.nickname}}</div>
+							<div class="contacts__name">
+								{% if user.name %} {{ user.name}}
+								{% else %} - {% endif %}
+							</div>
+						</div>
+					</div>
+					<div class="contacts__socials">
+						{% if user.telephone %}<a href="tel:{{ user.telephone }}" class="contacts__social _icon-tel"></a>{% endif %}
+						{% if user.telegram %}<a href="{{ user.telegram }}" class="contacts__social _icon-tg"></a>{% endif %}
+						{% if user.vkontakte %}<a href="{{ user.vkontakte }}" class="contacts__social _icon-vk"></a>{% endif %}
+						{% if user.instagram %}<a href="{{ user.instagram }}" class="contacts__social _icon-insta"></a>{% endif %}
+					</div>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</section>
+{% endblock %}
+
+{% block tours %}
+
+{% endblock %}

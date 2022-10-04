@@ -1,0 +1,64 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css">
+<script src="{% static 'custom_admin/js/custom_form_behavior.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<h1>Удалить Команду</h1>
+<h2>В левой колонке играющие команды. Перетащив команду в правую колонку она будет удалена с турнира по нажатию на кнопку "Удалть"</h2>
+<form action="" method='POST' class="custom-team__delete-form">
+   <p class="error"></p>
+   {% csrf_token %}
+   <input type="hidden" value="{{ tour.slug }}" name="tournament">
+   <input type="hidden" value="{{tour.pk}}" name="get_back_url">
+
+   <div class="form-row field-particapants">
+      <div>
+         <div class="related-widget-wrapper">
+            <div class="help">Удерживайте “Control“ (или “Command“ на Mac), чтобы выбрать несколько значений.</div>
+            <div class="selector">
+               <div class="selector-available">
+                  <h2>Играющие команды <span class="help help-tooltip help-icon"
+                        title="Это список всех играющих команд. Вы можете выбрать некоторые из них, выделив их в поле ниже и кликнув &quot;Выбрать&quot;, либо двойным щелчком."></span>
+                  </h2>
+
+                  <select name="particapants_old" id="id_particapants_from" multiple="" class="filtered"
+                     data-field-name="команд" data-is-stacked="0" style="height: 268px;">
+                     {% for part in teams_party %}
+                     <option value="{{ part.team.id }}">{{ part.team.name }}</option>
+                     {% endfor %}
+                  </select>
+
+                  <a title="Нажмите, чтобы выбрать все команды сразу." href="#" id="id_particapants_add_all_link"
+                     class="selector-chooseall active">Выбрать все</a>
+               </div>
+               <ul class="selector-chooser">
+                  <li><a title="Выбрать" href="#" id="id_particapants_add_link" class="selector-add">Выбрать</a></li>
+                  <li><a title="Удалить" href="#" id="id_particapants_remove_link" class="selector-remove">Удалить</a>
+                  </li>
+               </ul>
+               <div class="selector-chosen">
+                  <h2>Удалить команды <span class="help help-tooltip help-icon"
+                        title="Это список команд на удаление. Вы можете удалить некоторые из них, выделив их в поле ниже и кликнув &quot;Удалить&quot;, либо двойным щелчком."></span>
+                  </h2>
+                  <select id="id_particapants_to" multiple="" size="0" name="particapants" class="filtered"
+                     style="height: 268px;">
+                  </select>
+                  <a title="Нажмите чтобы удалить все команды сразу." href="#" id="id_particapants_remove_all_link"
+                     class="selector-clearall active">Удалить все</a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="submit-row">
+      <input type="button" value="Назад" class="default" onclick="sendUserBack()">
+      <input type="submit" value="Удалить" class="default save-btn" name="_save">
+   </div>
+</form>
+
+
+{% endblock %}

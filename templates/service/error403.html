@@ -1,0 +1,15 @@
+{% extends 'service/error_base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="error">
+	<div class="error__type">403</div>
+	<div class="error__container">
+		<div class="error__message">
+			<h2 class="error__title">Страница недоступна</h2>
+			<div class="error__subtitle">Чтобы получить доступ к странице необходимо авторизоваться</div>
+		</div>
+		<div class="error__replace">Перенаправление</div>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="edit-team">
+   <div class="players">
+      <div class="players__name-team">
+         <label class="players__label-name title-players _anim-item" for="editTeamName">Название команды:
+         </label>
+         <input data-url="{% url 'edit_team' %}" autocomplete="off" value="{{ user.team.name }}" type="text" class="players__input-name _anim-item" name="name" id="editTeamName">
+      </div>
+      <div class="players__description">
+         <h3 class="players__title-description title-players _anim-item">Добавить участников</h3>
+         <div class="players__text-description _anim-item">Добавляя участников команды каждый игрок
+            получает
+            приглашение на вступление в команду.Для зачисления игрока в команду необходимо чтобы он
+            принял
+            приглашение в своем профиле.
+         </div>
+      </div>
+      <div class="players__items">
+         <div class="players__item players__item_add">
+            <form action="{% url 'edit_team' %}" class="players__form">
+               {% csrf_token %}
+               <div class="players__list list-players _anim-item">
+                  <div class="list-players__header">
+                     <button type="submit" class="list-players__add"></button>
+                     <div class="list-players__searh">
+                        <button type="button" class="list-players__reset"></button>
+                        <input autocomplete="off" type="text" id="searchPlayers" name="search" class="list-players__input-searh">
+                        <label class="list-players__icon _icon-search" for="searchPlayers"></label>
+                     </div>
+                  </div>
+                  <ul class="list-players__items">
+                     {% if users %}
+                        {% for user in users %}
+                        <li class="list-players__item _table-item">
+                           <input type="checkbox" id="player{{user.id}}" class="list-players__checkbox" name="invite" value="{{user.id}}">
+                           <label class="list-players__checkbox-label search-label" for="player{{user.id}}">{{user.nickname}}</label>
+                        </li>
+                        {% endfor %}
+                        <li class="list-players__item search-alert"></li>
+                     {% else %}
+                        <li class="list-players__item search-alert _show">Больше игроков не осталось)</li>
+                     {% endif %}
+                  </ul>
+               </div>
+            </form>
+         </div>
+         <div class="players__item players__item_del">
+            <form action="{% url 'edit_team' %}" class="players__form">
+               {% csrf_token %}
+               <div class="players__list list-players _anim-item">
+                  <div class="list-players__header list-players__header_del">
+                     <div class="list-players__title title-players">Участники команды</div>
+                     <button type="submit" class="list-players__icon list-players__del _icon-del"></button>
+                  </div>
+                  <ul class="list-players__items">
+                     {% if mates %}
+                        {% for mate in mates %}
+                        <li class="list-players__item _table-item">
+                           <input type="checkbox" id="deletePlayer{{mate.id}}" class="list-players__checkbox" name="delete" value="{{mate.id}}">
+                           <label class="list-players__checkbox-label" for="deletePlayer{{mate.id}}">{{mate.nickname}}</label>
+                        </li>
+                        {% endfor %}
+                     {% endif %}
+                  </ul>
+               </div>
+            </form>
+         </div>
+      </div>
+      <div class="players__buttons buttons">
+         <div class="buttons__column">
+            <a href="{{ request.user.get_absolute_url }}" class="buttons__button _anim-item">Вернуться в профиль</a>
+         </div>
+         <div class="buttons__column">
+            <a href="#confirmRemovePopup" class="buttons__button popup-link _anim-item">Удалить команду</a>
+         </div>
+      </div>
+   </div>
+</section>
+
+{% endblock %}
+
+{% block tours %}
+{% endblock %}
+
+
+{% if request.user == player %}
+{% block profile_popups %}
+<div class="popup" id="confirmRemovePopup">
+   <div class="popup__body">
+      <div class="popup__content">
+         <a href="" class="popup__close close-popup"></a>
+         <h4 class="popup__title">Уведомление</h4>
+         <form action="{% url 'delete_team' %}" class="popup__form">
+            <div class="popup__items">
+               <div class="popup__message">
+                  <p>Вы уверены что хотите удалить команду?</p>
+               </div>
+            </div>
+            <div class="popup__buttons">
+               <div class="popup__button">
+                  <button type="submit" class="popup__btn btn">ДА</button>
+               </div>
+               <div class="popup__button">
+                  <button type="button" class="popup__btn btn close-popup">НЕТ</button>
+               </div>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+{% endblock %}
+{% endif %}

@@ -1,0 +1,83 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+
+{% block bg %}
+<div class="bg-chat ibg">
+	<picture>
+		<source srcset="{% static 'main/img/chat/bg-chat.webp' %}" type="image/webp"><img
+			src="{% static 'main/img/chat/bg-chat.png' %}" alt="">
+	</picture>
+</div>
+{% endblock %}
+
+{% block main %}
+<main class="main">
+	<section class="chat">
+		<div class="container">
+			<div class="chat__body">
+				<button type="button" class="chat__header">
+					<div class="chat__header-title">Вернуться назад</div>
+					<div class="chat__header-icon _icon-back"></div>
+				</button>
+				<div class="chat__content">
+					{% for message in messages %}
+						{% if message.user == user %}
+							<div class="chat__user chat__user_me send">
+								<div class="chat__user-msg">
+									<div class="chat__msg">
+										{{ message }}
+									</div>
+									<time class="chat__time">{{ message.date_created|date:'G:i' }}</time>
+								</div>
+							</div>
+						{% else %}
+							<div class="chat__user send">
+								<div class="chat__user-data">
+									<a href="" class="chat__user-avatar">
+										{% if message.user.photo %}
+										<picture>
+											<source srcset="{{ message.user.photo.url }}" type="image/webp"><img
+												src="{{ message.user.photo.url }}" alt="">
+										</picture>
+										{% else %}
+										<picture>
+											<source srcset="{% static 'main/img/header/profile.webp' %}" type="image/webp"><img
+												src="{% static 'main/img/header/profile.png' %}" alt="">
+										</picture>
+										{% endif %}
+									</a>
+									<div class="chat__user-items">
+										<div class="chat__user-item chat__user-item_nickname">{{ message.user.nickname }}</div>
+										{% if message.user.position %}
+										<div class="chat__user-item chat__user-item_post" style="color: {{message.user.position.color}};">{{message.user.position }}</div>
+										{% else %}
+										<div class="chat__user-item chat__user-item_post">Отсутсвует</div>
+										{% endif %}
+									</div>
+								</div>
+								<div class="chat__user-msg">
+									<div class="chat__msg">
+										{{ message }}
+									</div>
+									<time class="chat__time">{{ message.date_created|date:'G:i' }}</time>
+								</div>
+							</div>
+						{% endif %}
+					{% endfor %}
+				</div>	
+				<form class="chat__form">
+					{% csrf_token %}
+					<input autocomplete="off" name="message" type="text" class="chat__input" placeholder="Сообщение...">
+					<input name="nickname" type="hidden" class="user__nickname" value="{{ request.user.nickname }}">
+					<button type="submit" class="chat__btn _icon-send"></button>
+					<button type="button" class="chat__scroll-button">
+						<span></span>
+					</button>
+				</form>				
+			</div>
+	</section>
+</main>
+{% endblock %}
+
+{% block popups %}
+{% endblock %}

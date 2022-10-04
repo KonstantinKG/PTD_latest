@@ -1,0 +1,68 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="tournaments">
+   <div class="tournaments__articles articles aside-open">
+      {% for tour in tours %}
+      <article class="articles__item">
+         <div class="articles__image _anim-item">
+            {% if tour.photo %}
+            <picture>
+               <source srcset="{{ tour.photo.url }}" type="image/webp"><img src="{{ tour.photo.url }}"alt="">
+            </picture>
+            {% else %}
+            <picture>
+               <source srcset="{% static 'main/img/tournaments/01.webp' %}" type="image/webp"><img
+                  src="{% static 'main/img/tournaments/01.webp' %}" alt="">
+            </picture>
+            {% endif %}
+            <!-- <picture>
+               <source srcset="img/tournaments/01.webp" type="image/webp"><img src="img/tournaments/01.jpg" alt="">
+            </picture> -->
+            <time class="articles__date articles__date_{{tour.status.code}}"><span>{{ tour.mode.abbr }}</span> {{ tour.date_start|date:'d.m.Y' }} - {{ tour.date_end|date:'d.m.Y' }}</time>
+         </div>
+         <h2><a href="{{ tour.get_absolute_url }}" class="articles__title _anim-item">{{ tour.title }}</a></h2>
+      </article>
+      {% endfor %}
+   </div>
+   {% if page_obj.has_other_pages %}
+   <div class="tournaments__pagination pagination _anim-item">
+      {% if page_obj.has_previous %}
+         <a href="?page={{ page_obj.previous_page_number }}" class="pagination__btn pagination__btn_active"><i class="_icon-left-arrow"></i></a>
+      {% else %}
+         <button type="button" class="pagination__btn pagination__btn_disabled"><i class="_icon-left-arrow"></i></button>
+      {% endif %}
+      <ul class="pagination__list">
+         {% if paginator.num_pages >= 5 %}
+            <li class="pagination__number"><a href="?page={{ 1 }}">1</a></li>
+            <li class="pagination__dots">...</li>
+         {% endif %}
+         {% for p in paginator.page_range %}
+            {% if page_obj.number == p %}
+               <li class="pagination__number _active"><a href="#">{{ p }}</a></li>
+            {% elif p >= page_obj.number|add:-1 and p <= page_obj.number|add:1 %}
+               <li class="pagination__number"><a href="?page={{ p }}">{{ p }}</a></li>
+            {% endif %}
+         {% endfor %}
+
+         {% if paginator.num_pages >= 5 %}
+            <li class="pagination__dots">...</li>
+            <li class="pagination__number"><a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a></li>
+         {% endif %}
+
+      </ul>
+      {% if page_obj.has_next %}
+         <a href="?page={{ page_obj.next_page_number }}" class="pagination__btn pagination__btn_active"><i class="_icon-right-arrow"></i></a>
+      {% else %}
+         <button type="button" class="pagination__btn pagination__btn_disabled"><i class="_icon-right-arrow"></i></button>
+      {% endif %}
+   </div>
+   {% endif %}
+</section>
+
+{% endblock %}
+
+{% block tours %}
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'registration/email_base.html' %}
+
+{% block title %}Подтверждение аккаунта{% endblock %}
+
+{% block text %}
+   Для пользователя <strong>{{ user }}</strong> на сайте <strong>Platinum Dragons</strong> требуется подтверждение аккаунта для дальнейшего пользования. Чтобы подтвердить аккаунт нажмите на кнопку ниже.
+{% endblock %}
+
+{% block warn %}!!! В случае, если вы не регистрировали аккаунт на сайте проигнорируйте данное сообщение.{% endblock %}
+
+{% block link %}
+   {{ protocol }}://{{ domain }}{% url 'user_confirm' uidb64=uid token=token %}
+{% endblock %}

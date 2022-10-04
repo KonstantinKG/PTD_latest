@@ -1,0 +1,428 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css?_v=20220901112242" />
+	<link rel="stylesheet" href="{% static 'main/css/style.min.css' %}" type="text/css">
+	<link rel="shortcut icon" href="{% static 'main/img/favicon.ico' %}" >
+
+	<script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+
+	<title>{{ title }}</title>
+</head>
+
+
+<body>
+	<div class="wrapper">
+		<!-- ФОНОВАЯ КАРТИНКА -->
+		{% block bg %}
+		<div class="bg">
+			<picture>
+				<source srcset="{% static 'main/img/bg.webp' %}" type="image/webp"><img src="{% static 'main/img/bg.png' %}"
+					alt="">
+			</picture>
+		</div>
+		{% endblock %}
+
+		<!-- ФОНОВАЯ КАРТИНКА -->
+
+		{% block main %}
+
+		<!-- HEADER -->
+		<header class="header">
+			<div class="container">
+				<div class="header__top">
+					<a href="{% url 'about' %}" class="header__logo-wrapper">
+						<div class="header__logo">
+							<picture>
+								<source srcset="{% static 'main/img/header/logo.webp' %}" type="image/webp"><img
+									src="{% static 'main/img/header/logo.png' %}" alt="">
+							</picture>
+						</div>
+						<div class="header__name-adaptive">PTD</div>
+					</a>
+					<div class="header__name">Platinum Dragons</div>
+					<div class="header__buttons">
+						{% if user.is_authenticated %}
+						<a href="{{ user.get_absolute_url }}" class="header__avatar">
+							{% if request.user.photo %}
+							<picture>
+								<source srcset="{{ request.user.photo.url }}" type="image/webp"><img
+									src="{{ request.user.photo.url }}" alt="">
+							</picture>
+							{% else %}
+							<picture>
+								<source srcset="{% static 'main/img/header/profile.webp' %}" type="image/webp"><img
+									src="{% static 'main/img/header/profile.png' %}" alt="">
+							</picture>
+							{% endif %}
+						</a>
+						{% elif user.is_online %}
+						<a href="#mainPopup" class="header__btn header__btn_in popup-link">Вход</a>
+						{% else %}
+						<a href="#mainPopup" class="header__btn header__btn_up popup-link">Вступить</a>
+						{% endif %}
+
+					</div>
+					<button type="button" class="header__icon icon-header">
+						<span></span>
+					</button>
+				</div>
+				<div class="header__bottom">
+					<nav class="header__menu menu">
+						<ul class="menu__list">
+							{% for m in menu %}
+							<li><a href="{% url m.url_name %}" class="menu__link {{ m.current }}">{{ m.title }}</a></li>
+							{% endfor %}
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</header>
+		<!-- END HEADER -->
+
+		<!-- MAIN -->
+		<main class="main">
+			<div class="container">
+				<div class="main__body">
+					{% block content %}
+					<!-- Блок для основного контента -->
+					{% endblock %}
+
+					{% block sidebar %}
+					<!-- Блок для сайдбара -->
+					{% endblock %}
+				</div>
+			</div>
+		</main>
+		<!-- END MAIN -->
+
+		<!-- FOOTER -->
+		<footer class="footer">
+			<div class="container">
+				<div class="footer__body">
+					<a href="{% url 'privacy' %}" class="footer__privacy">Политика конфиденциальности</a>
+					<div class="footer__copyright">All rights reserved</div>
+				</div>
+			</div>
+		</footer>
+		<!-- END FOOTER -->
+
+		<!-- Всплывающая иконка чата -->
+		<a href="{% url 'chat' %}" class="icon-chat _icon-chat"></a>
+
+		{% endblock %}
+
+		<!-- Переменная с именем юзера для чата -->
+		{{ request.user.nickname|json_script:"json-username" }}
+	</div>
+
+	<!-- Блок с поп апами -->
+	{% block popups %}
+
+	{% if not user.is_authenticated %}
+
+	<!-- Поп ап регистрация + авторизация -->
+	<div class="popup {% if request.session.confirmed_user %} open {% endif %}" id="mainPopup">
+		<div class="popup__body">
+			<div class="popup__content">
+				<a href="" class="popup__close close-popup"></a>
+				<nav class="popup__tabs">
+					<h4 data-tab="1" class="popup__tab active">Авторизация</h4>
+					<span>/</span>
+					<h4 data-tab="2" class="popup__tab">Регистрация</h4>
+				</nav>
+				<form data-tab-content="1" method="post" action="{% url 'login' %}"
+					class="popup__form popup__form_main login__form active">
+					<div class="popup__items">
+						<div class="popup__item">
+							<input autocomplete="off" type="text" name="username" class="popup__input"
+								placeholder="Email, Nickname, Tel" required>
+						</div>
+						<div class="popup__item">
+							<input autocomplete="off" type="password" name="password" class="popup__input"
+								placeholder="Введите пароль" required>
+						</div>
+						<div class="popup__remember">
+							<div class="popup__checkbox">
+								<input type="checkbox" id="chexboxRemember" name="remember_me" class="popup__checkbox-input"
+									value="remember">
+								<label class="popup__checkbox-label" for="chexboxRemember">Запомнить</label>
+							</div>
+							<a href="#recoverPasswordPopup" class="popup__forget popup-link">Забыли пароль?</a>
+						</div>
+						<div class="popup__note">
+							Вы не активировали аккаунт. Для подтверждения необходимо отправить сообщение на почту:
+							<a href="#notifyTimerActivationPopup" class="popup-link resend-activation-email-btn">Отправить</a>
+						</div>
+						{% if request.session.confirmed_user %}
+						<div class="popup__note _active">Вы успешно активировали аккаунт</div>
+						{% endif %}
+						<div class="popup__error"></div>
+					</div>
+					<button type="submit" class="popup__btn btn">Войти</button>
+				</form>
+				<form data-tab-content="2" method="post" action="{% url 'register' %}"
+					class="popup__form popup__form_main register__form">
+					<div class="popup__items">
+						<div class="popup__item">
+							<label class="popup__label" for="popupNickname">Ник</label>
+							<input autocomplete="off" type="text" class="popup__input" id="popupNickname" name="nickname"
+								placeholder="Введите никнейм" required>
+						</div>
+						<div class="popup__item">
+							<label class="popup__label" for="popupEmail">Email</label>
+							<input autocomplete="off" type="email" class="popup__input" id="popupEmail" name="email"
+								placeholder="Введите email" required>
+						</div>
+						<div class="popup__item">
+							<label class="popup__label" for="popupPassword">Пароль</label>
+							<input autocomplete="off" type="password" class="popup__input" id="popupPassword" name="password1"
+								placeholder="Введите пароль" required>
+						</div>
+						<div class="popup__item">
+							<label class="popup__label" for="popupRepeatPassword">Повтор</label>
+							<input autocomplete="off" type="password" class="popup__input" id="popupRepeatPassword"
+								name="password2" placeholder="Повторите пароль" required>
+						</div>
+						<div class="popup__item">
+							<label class="popup__label" for="popupUID">UID</label>
+							<input autocomplete="off" type="text" class="popup__input" id="popupUID" name="uid"
+								placeholder="Скопируйте в игровом профиле" required>
+						</div>
+						<div class="popup__error"></div>
+					</div>
+					<div class="popup__policy">
+						<input required class="popup__policy-input" type="checkbox" id="popupAgreement" name="agreement"
+							value="agreement">
+						<label for="popupAgreement" class="popup__policy-label">
+							<span>Я даю свое согласие на обработку персональных данных в соответствии с <a
+									href="{% url 'privacy' %}">Условиями</a>*</span>
+						</label>
+					</div>
+					<button type="submit" class="popup__btn btn">Зарегистрироваться</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Поп ап для ввода емайла для востановления пароля -->
+
+	<div class="popup" id="recoverPasswordPopup">
+		<div class="popup__body">
+			<div class="popup__content">
+				<a href="" class="popup__close close-popup"></a>
+				<h4 class="popup__title">Восстановить пароль</h4>
+				<form action="{% url 'recovery' %}" method="post" class="popup__form reset-email__form">
+					<div class="popup__items">
+						<div class="popup__item">
+							<input autocomplete="off" type="email" name="email" class="popup__input"
+								placeholder="Введите ваш email" required>
+						</div>
+						<div class="popup__message">
+							<p>Вам на почту будет отправлено письмо для востановления пароля.</p>
+						</div>
+						<div class="popup__error"></div>
+					</div>
+					<div class="popup__buttons">
+						<a href="#mainPopup" class="popup__back popup-link"><i class="_icon-back"></i></a>
+						<button type="submit" class="popup__btn btn">Отправить</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Поп ап для ввода нового пароля -->
+
+	{% if request.session.reset_confirmed %}
+	<div class="popup open" id="newPasswordPopup">
+		<div class="popup__body">
+			<div class="popup__content">
+				<a href="" class="popup__close close-popup"></a>
+				<h4 class="popup__title">Поменяйте пароль</h4>
+				<form action="{% url 'recovery_reset' %}" method="post" class="popup__form new-password__form">
+					<div class="popup__items">
+						<div class="popup__item">
+							<input autocomplete="off" type="password" name="new_password1" class="popup__input"
+								placeholder="Пароль" required>
+						</div>
+						<div class="popup__item">
+							<input autocomplete="off" type="password" name="new_password2" class="popup__input"
+								placeholder="Подтвердите пароль" required>
+						</div>
+
+						<div class="popup__error"></div>
+					</div>
+
+					<button type="submit" class="popup__btn btn">Сменить пароль</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+
+	<div class="popup" id="notifyTimerActivationPopup">
+		<div class="popup__body">
+			<div class="popup__content">
+				<a href="" class="popup__close close-popup"></a>
+				<h4 class="popup__title">Уведомление</h4>
+				<form action="{% url 'resend_confirm_email' %}" class="popup__form resend-activation-email-form">
+					<div class="popup__items">
+						<div class="popup__message">
+							<p>Вам на почту было отправлено письмо для активации аккаунта.</p>
+							<p>Повторно отправить письмо: <button class="message-button" type="button"><span
+										class="timer">5:00</span></button> мин</p>
+							<p>Осталось попыток: <span class="tries">5</span></p>
+						</div>
+
+						<div class="popup__error"></div>
+					</div>
+
+
+					<button type="submit" class="popup__btn btn">Отправить</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="popup" id="notifyTimerRecoveryPopup">
+		<div class="popup__body">
+			<div class="popup__content">
+				<a href="" class="popup__close close-popup"></a>
+				<h4 class="popup__title">Уведомление</h4>
+				<form action="{% url 'resend_recovery_email' %}" class="popup__form resend-recovery-email-form">
+					<div class="popup__items">
+						<div class="popup__message">
+							<p>Вам на почту было отправлено письмо для востановления пароля.</p>
+							<p>Повторно отправить письмо: <button class="message-button" type="button"><span
+										class="timer">5:00</span></button> мин</p>
+							<p>Осталось попыток: <span class="tries">5</span></p>
+						</div>
+
+						<div class="popup__error"></div>
+					</div>
+					<button type="submit" class="popup__btn btn">Отправить</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Поп ап уведомление об отправке емайла для активации аккаунта -->
+	<div class="popup" id="notifyRegEmailPopup">
+		<div class="popup__body">
+			<div class="popup__content">
+				<a href="" class="popup__close close-popup"></a>
+				<div class="popup__title">Уведомление</div>
+				<div class="popup__items">
+					<div class="popup__message">
+						<p>Вам было отправлено письмо для активации аккаунта.</p>
+						<p>Повторно отправить письмо: <span data-url="{% url 'resend_confirm_email' %}"
+								class="resend_email_dj">Отправить</span></p>
+					</div>
+					<div class="error__field"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="popup" id="notifyLimitPopup">
+		<div class="popup__body">
+			<div class="popup__content">
+				<a href="" class="popup__close close-popup"></a>
+				<div class="popup__title">Уведомление</div>
+				<div class="popup__message">
+					<p>Не получилось добавить игрока(ов) в команду !</p>
+					<p>Привышен лимит игроков. Максимум вы можете добавить <span>1</span> игрока.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="popup" id="confirmRemovePopup">
+		<div class="popup__body">
+			<div class="popup__content">
+				<a href="" class="popup__close close-popup"></a>
+				<div class="popup__title">Уведомление</div>
+				<form action="#" class="popup__form">
+					<div class="popup__items">
+						<p>Вы уверены что хотите удалить (профиль. команду)?</p>
+					</div>
+					<div class="popup__buttons">
+						<div class="popup__button">
+							<button type="submit" class="popup__btn btn">ДА</button>
+						</div>
+						<div class="popup__button">
+							<button type="button" class="popup__btn btn close-popup">НЕТ</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Поп апы с уведомлениями -->
+	{% if message %}
+
+	<div class="popup" id="notifyPopup">
+		<div class="popup__body">
+			<div class="popup__content">
+				<a href="" class="popup__close close-popup"></a>
+				<div class="popup__title">Уведомление</div>
+				<div class="popup__message">
+					<p>{{ message }}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% endif %}
+
+	{% else %}
+	<div class="popup" id="notifyPopup">
+		<div class="popup__body">
+			<div class="popup__content">
+				<a href="" class="popup__close close-popup"></a>
+				<div class="popup__title">Уведомление</div>
+				<div class="popup__message">
+					<p>Вы уже авторизованны
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+
+	{% block extrapopups %}
+
+	{% endblock %}
+
+	{% endblock %}
+
+	{% if not request.session.recaptcha_checked %}
+	<input type="hidden" value="{{ recaptcha_site_key }}" class="recaptcha_site_key">
+	{% endif %}
+	{% csrf_token %}
+
+	{% block extrascripts %}
+	{% endblock %}
+
+	<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js?_v=20220618212311"></script>
+	<script src="{% static 'main/js/app.js' %}"></script>
+
+	<!-- <script src="{% static 'main/js/forms.js' %}"></script> -->
+	{% if user.is_authenticated %}
+	<script src="{% static 'main/js/chat.js' %}"></script>
+	{% endif %}
+
+	{% if not user.is_authenticated or not request.session.recaptcha_checked %}
+	<!-- <script src="{% static 'main/js/recaptcha.js' %}"></script> -->
+	{% endif %}
+</body>
+
+</html>

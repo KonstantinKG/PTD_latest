@@ -1,0 +1,156 @@
+{% extends 'bases/draft.html' %}
+{% load static %}
+
+{% block sidebar %}
+<aside class="aside aside-open">
+	<div class="aside__body">
+		<div class="aside__dots">
+			<div class="aside__dot"></div>
+			<div class="aside__dot"></div>
+			<div class="aside__dot"></div>
+			<div class="aside__dot"></div>
+			<div class="aside__dot"></div>
+			<div class="aside__dot"></div>
+			<div class="aside__dot"></div>
+			<div class="aside__dot"></div>
+			<div class="aside__dot"></div>
+			<div class="aside__dot"></div>
+			<div class="aside__dot"></div>
+		</div>
+		<button type="button" class="aside__arrows">
+			<span class="arrow"></span>
+			<span class="arrow"></span>
+			<span class="arrow"></span>
+		</button>
+		<div class="aside__content">
+
+			{% block tours %}
+
+			<!-- Блок с турнирами -->
+			<article class="aside__tournaments">
+				<h3><a href="tournaments.html" class="aside__tournaments-title title-aside">Турниры</a></h3>
+				<ul class="aside__tournaments-items">
+					{% for tour in aside_tours %}
+					<li class="aside__tournaments-item">
+						<div class="aside__tournaments-type">{{ tour.mode.abbr }}</div>
+						<a href="{{ tour.get_absolute_url }}" class="aside__tournaments-name">{{ tour.title|truncatechars:17 }}</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</article>
+
+			{% endblock %}
+
+			{% block news %}
+
+			<!-- Блок с новостью -->
+			<article class="aside__news">
+				<h3><a href="{% url 'news' %}" class="aside__news-title title-aside">Новости</a></h3>
+
+				<div class="aside__news-img">
+					<picture>
+						{% if aside_new.image %}
+						<source srcset="{{ aside_new.image.url }}" type="image/webp"><img src="{{ aside_new.image.url }}"
+							alt="">
+						{% else %}
+						<source srcset="{% static 'main/img/aside/01.webp' %}" type="image/webp"><img
+							src="{% static 'main/img/aside/01.jpg' %}" alt="">
+						{% endif %}
+					</picture>
+				</div>
+				<a href="{{ aside_new.get_absolute_url }}" class="aside__news-text">
+					{{ aside_new.title|truncatechars:47 }}
+				</a>
+			</article>
+
+			{% endblock %}
+
+			<!-- Блок с чатом -->
+			
+			<div class="aside__chat chat-aside ">
+				<h3><a href="{% url 'chat' %}" class="chat-aside__title title-aside">Чатик</a></h3>
+				{% if not user.is_authenticated %}
+				<div class="chat-aside__body blocked">
+				{% else %}
+				<div class="chat-aside__body">
+				{% endif %}
+					<div class="chat-aside__content">
+
+						<!-- Вывод сообщений -->
+						{% for message in messages %}
+
+						<!-- Проверка если сообщение пренадлежит текущему пользователю -->
+						{% if message.user == user %}
+						<div class="chat-aside__user chat-aside__user_me send">
+							<div class="chat-aside__user-msg">
+								<div class="chat-aside__msg">
+									{{ message }}
+								</div>
+								<time class="chat-aside__time">{{ message.date_created|date:"H:i"}}</time>
+							</div>
+						</div>
+
+						{% else %}
+
+						<div class="chat-aside__user send">
+							<div class="chat-aside__user-data">
+								<a href="" class="chat-aside__user-avatar">
+									<picture>
+
+										<!-- Проверка если фото пользователя -->
+										{% if message.user.photo %}
+										<source srcset="{{message.user.photo.url}}" type="image/webp"><img
+											src="{{message.user.photo.url}}" alt="">
+										{% else %}
+										<source srcset="{% static 'main/img/header/profile.webp' %}" type="image/webp"><img
+											src="{% static 'main/img/header/profile.png' %}" alt="">
+										{% endif %}
+
+									</picture>
+								</a>
+								<div class="chat-aside__user-items">
+									<div class="chat-aside__user-item chat-aside__user-item_nickname">{{message.user.nickname}}
+									</div>
+
+									<!-- Проверка если у пользователя должность -->
+									{% if message.user.position %}
+									<div class="chat-aside__user-item chat-aside__user-item_post"
+										style="color: {{message.user.position.color}};">{{message.user.position }}</div>
+									{% else %}
+									<div class="chat-aside__user-item chat-aside__user-item_post" style="color: grey;">Отсутсвует
+									</div>
+									{% endif %}
+
+								</div>
+							</div>
+							<div class="chat-aside__user-msg">
+								<div class="chat-aside__msg">
+									{{ message }}
+								</div>
+								<time class="chat-aside__time">{{ message.date_created|date:"H:i"}}</time>
+							</div>
+						</div>
+
+						{% endif %}
+
+						{% endfor %}
+
+					</div>
+
+					<!-- Форма отправки сообщения -->
+					<form action="" class="chat-aside__form">
+						<input autocomplete="off" name="chat" type="text" class="chat-aside__input" placeholder="Сообщение...">
+						<button type="submit" class="chat-aside__btn _icon-send"></button>
+						<button type="button" class="chat-aside__scroll-button">
+							<span></span>
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- Иконка чата при закрытом сайдбаре -->
+		<a href="{% url 'chat' %}" class="aside__icon-chat _icon-chat"></a>
+	</div>
+</aside>
+{% endblock %}

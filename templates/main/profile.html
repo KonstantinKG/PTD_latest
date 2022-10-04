@@ -1,0 +1,240 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+
+{% block content %}
+	<section class="profile">
+		<div class="profile__items aside-open">
+			<div class="profile__avatar _anim-item">
+				<div class="profile__image">
+					{% if player.photo %}
+					<picture>
+						<source srcset="{{ player.photo.url }}" type="image/webp"><img src="{{ player.photo.url }}"
+							alt="">
+					</picture>
+					{% else %}
+					<picture>
+						<source srcset="{% static 'main/img/header/profile.webp' %}" type="image/webp"><img
+							src="{% static 'main/img/header/profile.png' %}" alt="">
+					</picture>
+					{% endif %}
+					<div class="profile__wins">
+						<span></span>
+						<i class="_icon-win"></i>
+					</div>
+					<div class="profile__trophies">
+						<div class="profile__places">
+							<div class="profile__place profile__place_first">
+								<i class="_icon-win"></i>
+								<span>{{ player.gold }}</span>
+							</div>
+							<div class="profile__place profile__place_second">
+								<i class="_icon-win"></i>
+								<span>{{ player.silver }}</span>
+							</div>
+							<div class="profile__place profile__place_third">
+								<i class="_icon-win"></i>
+								<span>{{ player.bronze }}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="profile__content _anim-item">
+				<div class="profile__data">Ник: <span>{{ player.nickname }}</span></div>
+				<div class="profile__data">Имя: <span>
+					{% if player.name %} {{ player.name}}
+					{% else %} - {% endif %}
+				</span></div>
+				<div class="profile__data">Клан: <span>
+					{% if player.clan %} {{ player.clan}}
+					{% else %} - {% endif %}
+				</span></div>
+				<div class="profile__data">Должность: <span>
+					{% if player.position %} {{ player.position}}
+					{% else %} отсутствует {% endif %}
+				</span></div>
+				<div class="profile__data">Команда: <span>
+					{% if player.team %} {{ player.team}}
+					{% else %} - {% endif %}
+				</span></div>
+				<div class="profile__data">
+					{% if player.about %} {{ player.about}}
+					{% else %} - {% endif %}
+				</div>
+				{% if player.is_staff %}
+				<div class="profile__admin">
+					<i class="_icon-check"></i>
+					<div class="profile__distribute">распределяет по кланам</div>
+				</div>
+				<div class="profile__socials">
+					{% if player.telephone %}<a href="tel:{{ user.telephone }}" class="profile__social _icon-tel"></a>{% endif %}
+					{% if player.telegram %}<a href="{{ user.telegram }}" class="profile__social _icon-tg"></a>{% endif %}
+					{% if player.vkontakte %}<a href="{{ user.vkontakte }}" class="profile__social _icon-vk"></a>{% endif %}
+					{% if player.instagram %}<a href="{{ user.instagram }}" class="profile__social _icon-insta"></a>{% endif %}
+				</div>
+				{% endif %}
+			</div>
+		</div>
+
+		{% if user == player %}
+		<div class="profile__tables tables">
+			{% if player.team %}
+			<div class="tables__table tables__table_team _anim-item">
+				<h3 class="tables__title title _anim-item">Ваша команда {{ player.team }}</h3>
+				<ol class="tables__items">
+					<div class="tables__item _table-item">
+						<li class="tables__type"></li>
+						<a href="{{ user.team.leader.get_absolute_url }}" class="tables__name">{{ user.team.leader }}<span>Leader</span></a>
+					</div>
+					{% for mate in player.team.players.all %}
+						{% if mate != player %}
+							<div class="tables__item _table-item">
+								<li class="tables__type"></li>
+								<a href="{{ mate.get_absolute_url }}" class="tables__name">{{ mate.nickname }}</a>
+							</div>
+						{% endif %}
+					{% endfor %}
+				</ol>
+			</div>
+			{% endif %}
+
+			{% if tournaments %}
+			<div class="tables__table tables__table_tournaments _anim-item">
+				<h3 class="tables__title title _anim-item">Участие в турнирах</h3>
+				<ul class="tables__items">
+					{% for tour in tournaments %}
+					<li class="tables__item _table-item">
+						<div class="tables__type">{{ tour.mode.abbr }}</div>
+						<a href="{% url 'tour' tour.slug %}" class="tables__name">{{ tour }}</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+			{% endif %}
+
+			{% if not player.team and invitations %}
+			<div class="tables__table tables__table_invite _anim-item">
+				<h3 class="tables__title title _anim-item">Приглашения в команду</h3>
+				<ul class="tables__items">
+					{% for i in invitations %}
+					<li class="tables__item _table-item _invitation">
+						<div class="tables__name">
+							{{ i.team }}
+							<div class="tables__btns">
+								<input type="hidden" class="invite_id" value="{{ i.pk }}">
+								<button type="button" data-url="{% url 'accept_invite' %}" class="tables__btn _icon-check"></button>
+								<button type="button" data-url="{% url 'reject_invite' %}" class="tables__btn tables__btn_close"></button>
+							</div>
+						</div>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+			{% endif %}
+		</div>
+		<div class="profile__buttons buttons">
+			<div class="buttons__column">
+				<a href="{% url 'profile_edit' user.slug %}" class="buttons__button _anim-item">Редактировать профиль</a>
+				<a href="#confirmExitProfilePopup" class="buttons__button popup-link _anim-item">Выйти из
+					профиля</a>
+				{% if user.is_superuser %}
+				<a href="{% url 'admin:index' %}" class="buttons__button _anim-item">Войти в админку</a>
+				{% endif %}
+			</div>
+			<div class="buttons__column">
+				{% if not user.team %}
+					<a href="{% url 'create_team' %}" class="buttons__button _anim-item">Создать команду</a>
+				{% endif %}
+
+				{% if user.pk == user.team.leader.pk %}
+				<a href="{% url 'edit_team' %}" class="buttons__button _anim-item">Редактировать команду</a>
+				{% endif %}
+
+				{% if user.team %}
+				<a href="#confirmExitTeamPopup" class="buttons__button  popup-link _anim-item">Покинуть команду</a>
+				{% endif %}
+			</div>
+		</div>
+		{% endif %}
+	</section>
+{% endblock %}
+
+{% block tours %}
+{% endblock %}
+
+{% if user == player %}
+{% block extrapopups %}
+<div class="popup" id="confirmExitProfilePopup">
+	<div class="popup__body">
+		<div class="popup__content">
+			<a href="" class="popup__close close-popup"></a>
+			<h4 class="popup__title">Уведомление</h4>
+			<form action="{% url 'logout' %}" class="popup__form">
+				<div class="popup__items">
+					<div class="popup__message">
+						<p>Вы уверены что хотите выйти из профиля?</p>
+					</div>
+				</div>
+				<div class="popup__buttons">
+					<div class="popup__button">
+						<button type="submit" class="popup__btn btn">ДА</button>
+					</div>
+					<div class="popup__button">
+						<button type="button" class="popup__btn btn close-popup">НЕТ</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="popup" id="confirmExitTeamPopup">
+	<div class="popup__body">
+		<div class="popup__content">
+			<a href="" class="popup__close close-popup"></a>
+			<h4 class="popup__title">Уведомление</h4>
+			<form action="{% url 'leave_team' %}" class="popup__form">
+				<div class="popup__items">
+					<div class="popup__message">
+						<p>Вы уверены что хотите покинуть команду?</p>
+					</div>
+				</div>
+				<div class="popup__buttons">
+					<div class="popup__button">
+						<button type="submit" class="popup__btn btn">ДА</button>
+					</div>
+					<div class="popup__button">
+						<button type="button" class="popup__btn btn close-popup">НЕТ</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="popup" id="confirmRemovePopup">
+   <div class="popup__body">
+      <div class="popup__content">
+         <a href="" class="popup__close close-popup"></a>
+         <h4 class="popup__title">Уведомление</h4>
+         <form action="{% url 'delete_team' %}" class="popup__form">
+            <div class="popup__items">
+               <div class="popup__message">
+                  <p>Вы уверены что хотите удалить команду?</p>
+               </div>
+            </div>
+            <div class="popup__buttons">
+               <div class="popup__button">
+                  <button type="submit" class="popup__btn btn">ДА</button>
+               </div>
+               <div class="popup__button">
+                  <button type="button" class="popup__btn btn close-popup">НЕТ</button>
+               </div>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+{% endblock %}
+{% endif %}
+

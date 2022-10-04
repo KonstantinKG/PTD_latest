@@ -1,0 +1,89 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="edit-profile">
+   <form action="{% url 'profile_edit' request.user.slug %}" method="post" enctype="multipart/form-data" class="edit-profile__form">
+      {% csrf_token %}
+      <div class="edit-profile__body aside-open">
+         <div class="edit-profile__avatar _anim-item">
+            <div class="edit-profile__image">
+               <div class="edit-profile__preview">
+                  {% if request.user.photo %}
+                  <picture>
+                     <source srcset="{{ request.user.photo.url }}" type="image/webp"><img src="{{ request.user.photo.url }}"
+                        alt="">
+                  </picture>
+                  {% else %}
+                  <picture>
+                     <source srcset="{% static 'main/img/header/profile.webp' %}" type="image/webp"><img
+                        src="{% static 'main/img/header/profile.png' %}" alt="">
+                  </picture>
+                  {% endif %}
+               </div>
+               <div class="edit-profile__item">
+                  <input accept=".jpg, .jpeg, .png, .webp" type="file" name="photo" class="edit-profile__input-file"
+                     id="editProfileImage">
+                  <label for="editProfileImage" class="edit-profile__label-file"><i class="_icon-photo"></i></label>
+               </div>
+            </div>
+         </div>
+         <div class="edit-profile__content">
+            <div class="edit-profile__data _anim-item">
+               <label class="edit-profile__label" for="profileNickname">Ник:</label>
+               <input autocomplete="off" type="text" id="profileNickname" name="nickname" placeholder="Введите никнейм"
+                  class="edit-profile__input" value="{{ user.nickname }}">
+            </div>
+            <div class="edit-profile__data _anim-item">
+               <label class="edit-profile__label" for="profileName">Имя:</label>
+               <input autocomplete="off" type="text" id="profileName" name="name" placeholder="Введите имя"
+                  class="edit-profile__input" value="{{ user.name }}">
+            </div>
+            <div class="edit-profile__data _anim-item">
+               <label autocomplete="off" class="edit-profile__label" for="profileEmail">Email:</label>
+               <input autocomplete="off" type="email" id="profileEmail" name="email" placeholder="Введите email"
+                  class="edit-profile__input" value="{{ user.email }}">
+            </div>
+            <div class="edit-profile__data _anim-item">
+               <label class="edit-profile__label" for="profilePhone">Телефон:</label>
+               <input autocomplete="off" type="number" id="profilePhone" name="telephone" placeholder="Введите телефон"
+                  class="edit-profile__input" value="{{ user.telephone }}">
+            </div>
+            <div class="edit-profile__data _anim-item">
+               <textarea autocomplete="off" class="edit-profile__input" name="about"
+                  placeholder="Описание профиля" >{{ user.about }}</textarea>
+            </div>
+            {% if user.is_staff %}
+            <div class="edit-profile__socials _anim-item">
+               <label for="telegram" class="edit-profile__social edit-profile__social_tg _icon-tg"></label>
+               <input autocomplete="off" id="telegram" type="url" name="telegram" placeholder="Ссылка на телеграм"
+                  class="edit-profile__input" value="{{ user.telegram }}">
+            </div>
+            <div class="edit-profile__socials _anim-item">
+               <label for="instagram" class="edit-profile__social edit-profile__social_insta _icon-insta"></label>
+               <input autocomplete="off" id="instagram" type="url" name="instagram" placeholder="Ссылка на инстрагам"
+                  class="edit-profile__input" value="{{ user.instagram }}">
+            </div>
+            <div class="edit-profile__socials _anim-item">
+               <label for="vk" class="edit-profile__social edit-profile__social_vk _icon-vk"></label>
+               <input autocomplete="off" id="vk" type="url" name="vkontakte" placeholder="Ссылка на вк"
+                  class="edit-profile__input" value="{{ user.vkontakte }}">
+            </div>
+            {% endif %}
+         </div>
+      </div>
+      <div class="edit-profile__buttons buttons">
+         <div class="buttons__column">
+            <a href="{{ request.user.get_absolute_url }}" class="buttons__button _anim-item">Вернуться в профиль</a>
+         </div>
+         <div class="buttons__column">
+            <button type="submit" class="buttons__button _anim-item">Сохранить изменения</button>
+         </div>
+      </div>
+   </form>
+</section>
+{% endblock %}
+
+{% block tours %}
+{% endblock %}
