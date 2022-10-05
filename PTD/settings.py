@@ -110,16 +110,16 @@ DB_NAME = os.environ.get('DB_NAME', 'ptd_base')
 DB_USER = os.environ.get('DB_USER', 'PTDBaseUser')
 DB_PASSWORD = os.environ.get('DB_NAME', 'Gelo228lox')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': 'localhost',
-        # 'PORT': '8000',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': DB_NAME,
+#         'USER': DB_USER,
+#         'PASSWORD': DB_PASSWORD,
+#         'HOST': 'localhost',
+#         # 'PORT': '8000',
+#     }
+# }
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
