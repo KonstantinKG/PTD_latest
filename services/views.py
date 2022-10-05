@@ -440,12 +440,12 @@ class ResendConfirmEmailView(View, ServiceMixin, EmailSender):
       return HttpResponseRedirect(reverse('about'))
 
 
-def permission_denied_view(request, exception=None):
+def handler403(request, exception=None):
    return render(request, 'service/error403.html', {
       'title': '403'
    })
 
-def page_not_found(request, exception=None):
+def handler404(request, exception=None):
    return render(request, 'service/error404.html', {
       'title': '404'
    })

@@ -2,8 +2,7 @@ from .forms import *
 from .models import Messages
 from PTD import settings
 from django.views.generic import ListView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, JsonResponse, HttpResponseServerError, HttpResponseRedirect, HttpResponseNotAllowed
+from django.core.exceptions import PermissionDenied
 # Create your views here.
 def tours(request):
    pass
@@ -29,4 +28,4 @@ class ChatView(ListView):
       if request.user.is_authenticated:
          return super().get(request)
       
-      return HttpResponseNotAllowed()
+      raise PermissionDenied()

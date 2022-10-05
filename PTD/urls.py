@@ -30,8 +30,8 @@ urlpatterns = [
     path('tinymce/', include('tinymce.urls')),
 ]
 
-handler404 = 'services.views.page_not_found'
-handler403 = 'services.views.permission_denied_view'
+handler404 = 'services.views.handler404'
+handler403 = 'services.views.handler403'
 
 if settings.DEBUG:
     import debug_toolbar
