@@ -19,8 +19,6 @@
 					</div>
 					<h2><a href="{{ new.get_absolute_url }}" class="articles__title _anim-item">{{ new.title }}</a></h2>
 				</article>
-			{% empty %}
-				<h1>На данный момент новости на сайте отсутсвуют</h1>
 			{% endfor %}
 		</div>
 		{% if page_obj.has_other_pages %}

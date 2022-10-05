@@ -27,6 +27,7 @@
 			{% block tours %}
 
 			<!-- Блок с турнирами -->
+			{% if aside_tours %}
 			<article class="aside__tournaments">
 				<h3><a href="tournaments.html" class="aside__tournaments-title title-aside">Турниры</a></h3>
 				<ul class="aside__tournaments-items">
@@ -38,12 +39,14 @@
 					{% endfor %}
 				</ul>
 			</article>
+			{% endif %}
 
 			{% endblock %}
 
 			{% block news %}
 
 			<!-- Блок с новостью -->
+			{% if aside_new %}
 			<article class="aside__news">
 				<h3><a href="{% url 'news' %}" class="aside__news-title title-aside">Новости</a></h3>
 
@@ -62,6 +65,7 @@
 					{{ aside_new.title|truncatechars:47 }}
 				</a>
 			</article>
+			{% endif %}
 
 			{% endblock %}
 
