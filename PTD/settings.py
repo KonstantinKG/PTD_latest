@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', '') != 'False')
 
 
-ALLOWED_HOSTS = ['https://platinum-dragons.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['platinum-dragons.herokuapp.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
