@@ -13,11 +13,11 @@ from django.contrib.auth.base_user import AbstractBaseUser
 
 from .managers import UserManager
 
-import locale
-locale.setlocale(
-   category=locale.LC_ALL,
-   locale="ru-RU" 
-)
+# import locale
+# locale.setlocale(
+#    category=locale.LC_ALL,
+#    locale="ru-RU" 
+# )
 
 # ПОЛЬЗОВАТЕЛЬ
 class User(AbstractBaseUser, PermissionsMixin):
