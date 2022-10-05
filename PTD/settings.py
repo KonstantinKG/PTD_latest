@@ -31,7 +31,7 @@ DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 print(DEBUG)
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'platinum-dragons.herokuapp.com']
 
 
 # Application definition
@@ -111,6 +111,8 @@ CHANNEL_LAYERS = {
 DB_NAME = os.environ.get('DB_NAME', 'ptd_base')
 DB_USER = os.environ.get('DB_USER', 'PTDBaseUser')
 DB_PASSWORD = os.environ.get('DB_NAME', 'Gelo228lox')
+DATABASES = {}
+
 
 DATABASES = {
     'default': {
@@ -123,8 +125,18 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
+#         'NAME': os.environ.get('POSTGRES_DB', 'db_name'),
+#         'USER': os.environ.get('POSTGRES_USER', 'username'),
+#         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password'),
+#         'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+#     }
+# }
+
 db_from_env = dj_database_url.config(conn_max_age=500)
-print(db_from_env)
 DATABASES['default'].update(db_from_env)
 
 # Password validation
@@ -219,11 +231,14 @@ EMAIL_PORT = 2525
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'muhabrot@mail.ru')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'cD0eEWTPg3gSwUCJKJ3e')
+EMAIL_HOST_PASSWORD = os.environ.get(
+    'EMAIL_HOST_PASSWORD', 'cD0eEWTPg3gSwUCJKJ3e')
 
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
-RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY', '6Le5PLIgAAAAAET5Foqsxi5OL2xpo-kQxca30XGF')
-RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY', '6Le5PLIgAAAAADNd-a66kfmxhupP-jIPsj2VNFRo')
+RECAPTCHA_PUBLIC_KEY = os.environ.get(
+    'RECAPTCHA_PUBLIC_KEY', '6Le5PLIgAAAAAET5Foqsxi5OL2xpo-kQxca30XGF')
+RECAPTCHA_PRIVATE_KEY = os.environ.get(
+    'RECAPTCHA_PRIVATE_KEY', '6Le5PLIgAAAAADNd-a66kfmxhupP-jIPsj2VNFRo')
 RECAPTCHA_REQUIRED_SCORE = 0.6
 
 # CKEDITOR SETTINGS
@@ -235,16 +250,16 @@ CKEDITOR_CONFIGS = {
         ],
         'toolbar_YourCustomToolbarConfig': [
             {'name': 'basicstyles',
-            'items': ['Bold', 'Italic', 'Underline', 'Strike']},
+             'items': ['Bold', 'Italic', 'Underline', 'Strike']},
             {'name': 'paragraph',
-            'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-']},
+             'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-']},
             {'name': 'insert',
-            'items': ['Smiley', 'SpecialChar']},
+             'items': ['Smiley', 'SpecialChar']},
         ],
         'toolbar': 'YourCustomToolbarConfig',
         'tabSpaces': 4,
         'extraPlugins': ','.join([
-            'uploadimage', # the upload image feature
+            'uploadimage',  # the upload image feature
             # your extra plugins here
             'div',
             'autolink',
