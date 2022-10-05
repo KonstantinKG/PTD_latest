@@ -3,11 +3,12 @@ from .models import Messages
 from PTD import settings
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse, JsonResponse, HttpResponseServerError, HttpResponseRedirect, HttpResponseNotAllowed
 # Create your views here.
 def tours(request):
    pass
 
-class ChatView(LoginRequiredMixin, ListView):
+class ChatView(ListView):
    model = Messages
    template_name = 'chat/chat.html'
    context_object_name = 'messages'
@@ -23,3 +24,9 @@ class ChatView(LoginRequiredMixin, ListView):
    
    def get_queryset(self):
       return super().get_queryset().select_related('user', 'user__position')
+
+   def get(self, request):
+      if request.user.is_authenticated:
+         return super().get(request)
+      
+      return HttpResponseNotAllowed()
