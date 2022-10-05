@@ -30,8 +30,6 @@ urlpatterns = [
     path('tinymce/', include('tinymce.urls')),
 ]
 
-handler404 = 'services.views.handler404'
-handler403 = 'services.views.handler403'
 
 if settings.DEBUG:
     import debug_toolbar
@@ -41,3 +39,6 @@ if settings.DEBUG:
     ] + urlpatterns
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+
+handler404 = 'services.views.handler404'
+handler403 = 'services.views.handler403'

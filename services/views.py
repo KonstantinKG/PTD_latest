@@ -443,9 +443,9 @@ class ResendConfirmEmailView(View, ServiceMixin, EmailSender):
 def handler403(request, exception=None):
    return render(request, 'service/error403.html', {
       'title': '403'
-   }, status=403)
+   })
 
 def handler404(request, exception=None):
    return render(request, 'service/error404.html', {
       'title': '404'
-   }, status=404)
+   })
