@@ -31,7 +31,7 @@ DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 print(DEBUG)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'platinum-dragons.herokuapp.com']
+ALLOWED_HOSTS = ['https://platinum-dragons.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
