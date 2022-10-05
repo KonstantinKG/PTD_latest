@@ -26,7 +26,7 @@ class ChatView(ListView):
 
    def get(self, request):
       if not request.user.is_authenticated:
-         raise PermissionDenied
+         raise PermissionDenied()
 
       super().get(request)
 
