@@ -19,12 +19,11 @@ class AboutView(View, DataMixin):
 
    def get(self, request):
       request.session['last_visited_page'] = request.path_info
-      about_page = AboutPageModel.objects.all()
-
+      print(AboutPageModel.objects.all()[0].para1)
       return render(request, self.template, self.get_user_context(
          title='О клане',
          curr_page_url='about',
-         page=cache.get_or_set('page', about_page if len(about_page) else None, 60 * 15)
+         page=cache.get_or_set('page', AboutPageModel.objects.all()[0], 60 * 15)
       ))
 
 # СОСТАВ
