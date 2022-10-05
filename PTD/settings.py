@@ -120,6 +120,7 @@ DB_PASSWORD = os.environ.get('DB_NAME', 'Gelo228lox')
 #         # 'PORT': '8000',
 #     }
 # }
+DATABASES = {}
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
