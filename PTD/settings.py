@@ -27,9 +27,8 @@ SECRET_KEY = os.environ.get(
     'DJANGO_SECRET_KEY', 'pdk8bcv@oy$o4asp2100ymrv(0y$&qy5#oh-i($2s=j4fa4uvp')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
+DEBUG = bool(os.environ.get('DJANGO_DEBUG', '') != 'False')
 
-print(DEBUG)
 
 ALLOWED_HOSTS = ['https://platinum-dragons.herokuapp.com', '127.0.0.1']
 
