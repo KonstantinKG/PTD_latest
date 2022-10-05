@@ -16,7 +16,7 @@ from .managers import UserManager
 import locale
 locale.setlocale(
    category=locale.LC_ALL,
-   locale="Russian" 
+   locale="ru-RU.UTF-8" 
 )
 
 # ПОЛЬЗОВАТЕЛЬ
