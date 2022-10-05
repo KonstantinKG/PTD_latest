@@ -415,13 +415,8 @@
 	<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js?_v=20220618212311"></script>
 	<script src="{% static 'main/js/app.min.js' %}"></script>
 
-	<!-- <script src="{% static 'main/js/forms.js' %}"></script> -->
 	{% if user.is_authenticated %}
 	<script src="{% static 'main/js/chat.js' %}"></script>
-	{% endif %}
-
-	{% if not user.is_authenticated or not request.session.recaptcha_checked %}
-	<!-- <script src="{% static 'main/js/recaptcha.js' %}"></script> -->
 	{% endif %}
 </body>
 

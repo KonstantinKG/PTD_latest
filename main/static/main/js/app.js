@@ -3,7 +3,6 @@
 var __webpack_exports__ = {};
 
 ;// CONCATENATED MODULE: ./src/js/modules/animation.js
-
 const animObserver = new IntersectionObserver((entries, observer) => {
 	entries.forEach(entry => {
 		entry.target.classList.toggle("_animate", entry.isIntersecting);
@@ -33,7 +32,47 @@ if (tableItems.length > 0) {
 		tableObserver.observe(tableItem);
 	});
 }
+;// CONCATENATED MODULE: ./src/js/modules/cookie.js
+const cookie = document.querySelector('.cookie');
+const acceptButton = document.querySelector('.cookie__button');
+if (cookie) {
+	setTimeout(() => {
+		cookie.style.removeProperty('opacity');
+		cookie.style.removeProperty('visibility');
+	}, 3000);
+	
+	acceptButton.addEventListener("click", () => {
+		document.cookie = "CookieBy=PtatinumDragons; max-age="+60*60*24*30;
+		if (document.cookie) {
+			cookie.classList.add("_hide");
+		} 	
+	})
+	let checkCookie = document.cookie.indexOf("CookieBy=PtatinumDragons");
+	checkCookie != -1 ? cookie.classList.add("_hide") : cookie.classList.remove("_hide");
 
+
+	const cookieMessage = document.querySelector('.cookie__message');
+	const cookieLink = document.querySelector('.cookie__link');
+	const cookieButtons = document.querySelector('.cookie__buttons');
+
+	const mediaQueryTablet = window.matchMedia('(max-width: 767px)');
+	mediaQueryTablet.addEventListener("change", adapt);
+	adapt(mediaQueryTablet);
+
+	function adapt(mediaQueryTablet) {
+		if (mediaQueryTablet.matches) {
+			if (!cookieLink.classList.contains('_adapt')) {
+				cookieButtons.append(cookieLink);
+				cookieLink.classList.add('_adapt');
+			}	
+		} else {
+			if (cookieLink.classList.contains('_adapt')) {
+				cookieMessage.append(cookieLink);
+				cookieLink.classList.remove('_adapt');
+			}
+		}
+	}
+}
 ;// CONCATENATED MODULE: ./src/js/modules/functions.js
 // ========================ISWEBP===============================
 function isWebp() {
@@ -84,7 +123,7 @@ function fileReader() {
 			return;
 		}
 		if (file.size > 50 * 1024 * 1024) {
-			alert('Файл должен быть менее 2мб');
+			alert('Файл должен быть менее 50мб');
 			return;
 		}
 
@@ -140,21 +179,6 @@ function tabletChange(mediaQuery) {
 		}
 	}
 }
-
-
-// ========================MENU-ACTIVE===============================
-// const menuItems = document.querySelectorAll('.menu__link');
-// const local = window.location.href;
-// const currentOrigin = window.location.origin;
-
-// menuItems.forEach(menuItem => {
-// 	if (local === `${currentOrigin}/` || local === `${currentOrigin}/CallOfDuty/`) {
-// 		menuItems[0].classList.add('active');
-// 	} else {
-// 		if (menuItem.href === local) menuItem.classList.add('active');
-// 		else menuItem.classList.remove('active');
-// 	}
-// });
 ;// CONCATENATED MODULE: ./src/js/modules/script.js
 // ========================ASIDE-OPEN===============================
 const asideButton = document.querySelector('.aside__arrows');
@@ -244,6 +268,16 @@ if (iconWin) {
 	})
 }
 
+
+
+// ========================ERROR-REPLACE===============================
+const error = document.querySelector('.error');
+if (error) {
+	setTimeout(() => {
+		window.location.replace(history.back());
+	}, 5000);
+}
+
 ;// CONCATENATED MODULE: ./src/js/modules/popups.js
 const popupLinks = document.querySelectorAll('.popup-link');
 const body = document.querySelector('body');
@@ -269,7 +303,7 @@ if (popupCloseIcon.length > 0) {
 	for (let index = 0; index < popupCloseIcon.length; index++) {
 		const el = popupCloseIcon[index];
 		el.addEventListener("click", function (e) {
-			popupClose(el.closest('.popup'));
+			popups_popupClose(el.closest('.popup'));
 			e.preventDefault();
 		})
 	}
@@ -279,20 +313,20 @@ function popupOpen(currentPopup) {
 	if (currentPopup && unlock) {
 		const popupActive = document.querySelector('.popup.open');
 		if (popupActive) {
-			popupClose(popupActive, false);
+			popups_popupClose(popupActive, false);
 		} else {
 			bodyLock();
 		}
 		currentPopup.classList.add('open');
 		currentPopup.addEventListener("click", function (e) {
 			if (!e.target.closest('.popup__content')) {
-				popupClose(e.target.closest('.popup'));
+				popups_popupClose(e.target.closest('.popup'));
 			}
 		})
 	}
 }
 
-function popupClose(popupActive, doUnlock = true) {
+function popups_popupClose(popupActive, doUnlock = true) {
 	if (!popupActive.closest('.popup._sending')) {
 		if (unlock) {
 			popupActive.classList.remove('open');
@@ -342,7 +376,7 @@ function bodyUnlock() {
 document.addEventListener("keydown", function (e) {
 	if (e.key === "Escape") {
 		const popupActive = document.querySelector('.popup.open');
-		popupClose(popupActive);
+		popups_popupClose(popupActive);
 	}
 })
 ;// CONCATENATED MODULE: ./src/js/modules/swiper.js
@@ -1340,8 +1374,9 @@ document.addEventListener('DOMContentLoaded', function () {
 		})
 		arr.length = 0;
 	}
-
+	
 }, false);
+
 
 ;// CONCATENATED MODULE: ./src/js/modules/spollers.js
 const spollersArray = document.querySelectorAll('[data-spollers]');
@@ -1524,8 +1559,6 @@ let _slideToggle = (target, duration = 500) => {
 	}
 }
 ;// CONCATENATED MODULE: ./src/js/modules/forms.js
-
-
 // +++++++++++++ //
 // ПОП АПЫ
 // +++++++++++++ //
@@ -1864,7 +1897,7 @@ if (editTeamName) {
          body: data,
          headers: {
             "X-Requested-With": "XMLHttpRequest",
-            "X-CSRFToken": getCSRF_TOKEN()
+            "X-CSRFToken": forms_getCSRF_TOKEN()
          },
       })
          .then(response => {
@@ -1998,7 +2031,7 @@ function acceptTeamHandler(e) {
          body: data,
          headers: {
             "X-Requested-With": "XMLHttpRequest",
-            "X-CSRFToken": getCSRF_TOKEN()
+            "X-CSRFToken": forms_getCSRF_TOKEN()
          },
       })
          .then(response => {
@@ -2062,7 +2095,7 @@ if (infoTournamentForm) {
 				popupOpen(popup)
 
 				// И ожидаем подтверждение
-				cover = fetchSender.bind(this, url, data, popup);
+				cover = fetchSender.bind(undefined, url, data, popup);
 				popup.querySelector('.popup__btn-agree').addEventListener('click', cover);
 				return;
 			}
@@ -2127,7 +2160,7 @@ function createFetchRequest(form, func) {
          credentials: "same-origin",
          headers: {
             "X-Requested-With": "XMLHttpRequest",
-            "X-CSRFToken": getCSRF_TOKEN()
+            "X-CSRFToken": forms_getCSRF_TOKEN()
          },
          body: JSON.stringify(data)
       })
@@ -2193,7 +2226,7 @@ function displayErrors(form, errors) {
 }
 
 // Получение куки
-function getCSRF_TOKEN() {
+function forms_getCSRF_TOKEN() {
    return document.querySelector('input[name="csrfmiddlewaretoken"]').value
 }
 
@@ -2202,7 +2235,7 @@ function getRecaptchaToken() {
 	if (recaptchaKey) {
 		grecaptcha.ready(function() {
 			grecaptcha.execute(recaptchaKey.value, {action: 'submit'}).then(function(token) {
-				let csrf = getCSRF_TOKEN();
+				let csrf = forms_getCSRF_TOKEN();
 				if (csrf) {
 					fetch("../service/recaptcha", {
 						method: "POST",
@@ -2230,11 +2263,9 @@ function getRecaptchaToken() {
 // ++++++++++++++++++++ //
 //	СЛУЖЕБНЫЕ ФУНКЦИИ КОНЕЦ //
 // ++++++++++++++++++++ //
-
 ;// CONCATENATED MODULE: ./src/js/app.js
 
 /*==============================IMPORT========================================*/
-
 ;
 
 

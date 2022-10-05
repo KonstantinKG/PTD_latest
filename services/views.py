@@ -209,7 +209,7 @@ class RegisterView(View, ServiceMixin, EmailSender):
 
          user = form.save()
 
-         timer = self.check_timers(request, 'confirm_try', 'confirm_timer', timer_secs=5)
+         timer = self.check_timers(request, 'confirm_try', 'confirm_timer', timer_secs=300)
 
          if not isinstance(timer, int): return timer 
 
@@ -235,7 +235,7 @@ class ResetEmailView(View, EmailSender, ServiceMixin):
 
       if form.is_valid() and self.is_ajax(request):
 
-         timer = self.check_timers(request, 'reset_try', 'reset_timer', timer_secs=5)
+         timer = self.check_timers(request, 'reset_try', 'reset_timer', timer_secs=300)
 
          if not isinstance(timer, int): return timer 
 

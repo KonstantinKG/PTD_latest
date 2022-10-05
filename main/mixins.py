@@ -35,7 +35,7 @@ class DataMixin:
 
             context['menu'] = user_menu
 
-            context['aside_new'] = cache.get_or_set('aside_new', News.objects.all()[0], 60 * 10)
+            context['aside_new'] = cache.get_or_set('aside_new', News.objects.filter(is_published=True).first(),  60 * 10)
             context['aside_tours'] = cache.get_or_set('aside_tours', Tournament.objects.all()[:5], 60 * 10)
 
             context['recaptcha_site_key'] = settings.RECAPTCHA_PUBLIC_KEY
