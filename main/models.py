@@ -233,7 +233,7 @@ class News(models.Model):
 
 # НАСТРОЙКА ГЛАВНОЙ СТРАНИЦЫ
 class AboutPageModel(models.Model):
-   video = models.FileField(upload_to="about/videos/", verbose_name="Видео")
+   video = models.FileField(upload_to="about/videos/", null=True, blank=True, verbose_name="Видео")
    para1 = models.TextField(verbose_name="Параграф 1-й")
    para2 = models.TextField(blank=True, verbose_name="Параграф 2-й")
 
