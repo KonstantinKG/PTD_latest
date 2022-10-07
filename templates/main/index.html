@@ -15,6 +15,16 @@
 					</video>
 				</div>
 			</div>
+			{% else %}
+			<div data-swiper-autoplay="5000" class="about-swiper__slide swiper-slide">
+				<div class="about-swiper__image">
+					<video autoplay preload="auto" muted controls poster="{%  static 'main/img/video/preview-video.jpg' %}"
+						class="about-swiper__item">
+						<source src="{%  static 'main/img/video/preview.webm' %}" type="video/webm">
+						<source src="{%  static 'main/img/video/preview.mp4' %}" type="video/mp4">
+					</video>
+				</div>
+			</div>
 			{% endif %}
 			{% for photo in page.photos.all %}
 			<div class="about-swiper__slide swiper-slide">

@@ -403,6 +403,16 @@
 	{% endblock %}
 
 	{% endblock %}
+	<div class="cookie _hide" >
+		<div class="cookie__body">
+			<div class="cookie__message">
+				Продолжая пользоваться сайтом, вы соглашаетесь на использование файлов cookie. Более подробную информацию можно найти в. <a class="cookie__link" href="{% url 'cookie' %}">Политике cookie файлов</a>
+			</div>
+			<div class="cookie__buttons">
+				<button type="button" class="cookie__button"></button>
+			</div>	
+		</div>
+	</div>
 
 	{% if not request.session.recaptcha_checked %}
 	<input type="hidden" value="{{ recaptcha_site_key }}" class="recaptcha_site_key">

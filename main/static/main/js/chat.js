@@ -7,16 +7,13 @@ const chat_aside_body = document.querySelector('.chat-aside__content')
 const userNickname = JSON.parse(document.getElementById('json-username').textContent);
 let is_scroll = true;
 
+let link = 'ws://' + window.location.host + '/ws/' + 'chat/'
 
+if (window.location.protocol == 'https')
+   link = 'wss://' + window.location.host + '/ws/' + 'chat/'
 
 const chatSocket = new WebSocket(
-   'ws://'
-   +
-   window.location.host
-   +
-   '/ws/'
-   +
-   'chat/'
+   link
 )
 
 chatSocket.onmessage = function(e){
@@ -127,7 +124,6 @@ function add_message_listener(form, input, ch_body)
       ch_body.addEventListener('scroll', () => {is_scroll = false})
       form.addEventListener('submit', (e) => {
          e.preventDefault();
-         console.log('afsfas')
          
          if (userNickname && input.value)
          {

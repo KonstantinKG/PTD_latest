@@ -10,6 +10,9 @@ urlpatterns = [
    # Privacy Policy
    path('privacy', PrivacyView.as_view(), name='privacy'),
 
+   # Cookie Policy
+   path('cookie', CookieView.as_view(), name='cookie'),
+
    # Admin custom behavior for tournament model
    path('admin/getteams', getTeams, name='get_teams'),
    path('admin/getteam', getTeam, name='get_team'),

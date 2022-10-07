@@ -53,6 +53,15 @@ class PrivacyView(View, DataMixin):
          title='Политика конфиденциальности'
       ))
 
+# Cookie policy
+class CookieView(View, DataMixin):
+   template = 'service/cookie.html'
+
+   def get(self, request):
+      return render(request, self.template, self.get_user_context(
+         title='Политика cookie'
+      ))
+
 # Getting TEAMS for admin Tournaments
 def getTeams(request):
    if request.method == 'POST':

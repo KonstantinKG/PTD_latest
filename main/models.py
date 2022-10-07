@@ -192,7 +192,7 @@ class Limit(models.Model):
 
 # НОВОСТИ
 class News(models.Model):
-   image = models.ImageField(upload_to="news/%Y/%m/%d/", verbose_name="Изображение")
+   image = models.ImageField(upload_to="news/%Y/%m/%d/", null=True, blank=True, verbose_name="Изображение")
    data = models.FileField(upload_to="news/%Y/%m/%d/",null=True, blank=True, verbose_name="Файл")
    title = models.CharField(max_length=500, verbose_name='Заголовок')
    content = models.TextField(verbose_name='Текст новости')

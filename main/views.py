@@ -329,14 +329,6 @@ class RejectInvitationView(LoginRequiredMixin, View):
          return HttpResponseServerError()
 
 
-def sostav(request):
-   return render(request, 'main/editTeam.html')
-
-def tours(request):
-   pass
-def confirm(request):
-   pass
-
 
 
 
