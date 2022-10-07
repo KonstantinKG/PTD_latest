@@ -12,7 +12,7 @@
 							{% if new.image %}
 							<source srcset="{{ new.image.url }}" type="image/webp"><img src="{{ new.image.url }}" alt="">
 							{% else %}
-							<source srcset="{% static 'main/img/news/01.webp' %}" type="image/webp"><img src="{% static 'main/img/aside/01.jpg' %}" alt="">
+							<source srcset="{% static 'main/img/news/01.webp' %}" type="image/webp"><img src="{% static 'main/img/news/01.jpg' %}" alt="">
 							{% endif %}
 						</picture>
 						<time class="articles__date">{{ new.get_date }}</time>
