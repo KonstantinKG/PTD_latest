@@ -36,8 +36,8 @@ class MembersView(ListView, DataMixin):
       c_def = self.get_user_context(
          title='Состав',
          curr_page_url='members',
-         clans=cache.get_or_set('clans', self._group_by_clans(), 60 * 15),
-         staff=cache.get_or_set('staff', User.objects.filter(is_staff=True).select_related('position'), 60 * 15)
+         clans=cache.get_or_set('clans', self._group_by_clans(), 60 * 5),
+         staff=cache.get_or_set('staff', User.objects.filter(is_staff=True).select_related('position'), 60 * 5)
       )
       return dict(list(context.items()) + list(c_def.items()))
 
@@ -80,7 +80,7 @@ class NewsView(ListView, DataMixin):
       return dict(list(context.items()) + list(c_def.items()))
 
    def get_queryset(self):
-      return cache.get_or_set('news', News.objects.filter(is_published=True), 60 * 10)
+      return cache.get_or_set('news', News.objects.filter(is_published=True), 60 * 2)
 
 # ОТДЕЛЬНАЯ НОВОСТЬ
 class  SingleNewView(DetailView, DataMixin):

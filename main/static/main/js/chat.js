@@ -9,9 +9,11 @@ let is_scroll = true;
 
 let link = 'ws://' + window.location.host + '/ws/' + 'chat/'
 
-if (window.location.protocol == 'https')
+if (window.location.protocol == 'https:')
    link = 'wss://' + window.location.host + '/ws/' + 'chat/'
 
+console.log(window.location.protocol);
+   
 const chatSocket = new WebSocket(
    link
 )
