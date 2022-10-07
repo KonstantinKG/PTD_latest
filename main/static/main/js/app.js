@@ -386,7 +386,6 @@ document.addEventListener("keydown", function (e) {
 new Swiper('.about-swiper', {
 	loop: true,
 	grabCursor: true,
-	initialSlide: 3,
 	speed: 800,
 	pagination: {
 		el: '.swiper-pagination',
