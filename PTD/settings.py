@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', '') != 'False')
 
 ALLOWED_HOSTS = ['platinum-dragons.herokuapp.com', '127.0.0.1', 'localhost']
-
+CSRF_TRUSTED_ORIGINS = ['https://platinum-dragons.herokuapp.com']
 
 # Application definition
 CORS_ORIGIN_WHITELIST = ('127.0.0.1:8000',)
