@@ -99,17 +99,17 @@ class  SingleNewView(DetailView, DataMixin):
       return dict(list(context.items()) + list(c_def.items()))
 
 # ПРОФИЛЬ
-class ProfileView(LoginRequiredMixin, DetailView, DataMixin):
+class ProfileView(DetailView, DataMixin):
    model = User
    template_name = 'main/profile.html'
    slug_url_kwarg = 'user_slug'
    context_object_name = 'player'
 
-   def get(self, request):
+   def get(self, request, *args, **kwargs):
       if not request.user.is_authenticated:
          raise PermissionDenied()
 
-      return super().get(request)
+      return super().get(request, args, kwargs)
 
    def get_context_data(self, *, object_list=None, **kwargs):
       context = super().get_context_data(**kwargs)

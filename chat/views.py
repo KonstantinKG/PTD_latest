@@ -24,9 +24,9 @@ class ChatView(ListView):
    def get_queryset(self):
       return super().get_queryset().select_related('user', 'user__position')
 
-   def get(self, request):
+   def get(self, request, *args, **kwargs):
       if not request.user.is_authenticated:
          raise PermissionDenied()
 
-      return super().get(request)
+      return super().get(request, args, kwargs)
 
