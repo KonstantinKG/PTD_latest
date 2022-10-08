@@ -105,24 +105,8 @@ class Tournament(models.Model):
             if not self._check_soon_start():
                self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['open'], code=Status.OPEN, priority=1)[0]
          
-         if not self._check_table_changes(tour[0]):
+         elif not self._check_table_changes(tour[0]):
             raise ValidationError({'__all__': 'Изменение турнира после его удачного завершения невозможно'})
-
-   # def save(self):
-   #    if (self.places < self.min_places):
-   #       self.places = self.min_places
-      
-   #    tour = Tournament.objects.filter(slug=self.slug) 
-
-   #    if (len(tour) == 0):
-   #       self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['open'], code=Status.OPEN, priority=1)[0]
-
-   #    elif self.table is not None:
-   #       self._check_table_changes(tour)
-   #    else:
-   #       self._check_open_spaces()
-
-   #    super(Tournament, self).save()
 
    # Добавляет и убирает очки победителям
    def _set_points(self, obj, desc=False):
