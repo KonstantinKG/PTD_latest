@@ -1,13 +1,14 @@
 from django.contrib import admin
 from .models import *
 from main.models import *
-from ckeditor.widgets import CKEditorWidget
+from tinymce.widgets import TinyMCE
 from django import forms
 from main.admin import ptd_site
 
 # Register your models here.
 class TournamentFormAdmin(forms.ModelForm):
-   rules = forms.CharField(widget=CKEditorWidget(), label='Правила', help_text='Рекомендовано использовать только списки в этом поле')
+   description = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}), label='Правила', help_text='Если вы копируете текст из сторонних источников и вставляете в это поле не забывайте выделить текст и нажать кнопку Т с крестиком снизу')
+   rules = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}), label='Правила', help_text='Рекомендовано использовать только списки в этом поле')
 
    class Meta:
       model = Tournament

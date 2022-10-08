@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extrastyle %}
-
+<link rel="stylesheet" href="{% static 'custom_admin/css/style.css' %}">
 {% endblock %}
 
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
@@ -19,8 +19,10 @@
    <script>
    tinymce.init({
       forced_root_block : "",
+      plugins: 'link lists',
       selector:'textarea',  
-      language:"ru"
+      language:"ru",
+      toolbar: "undo redo | bold italic | link | removeformat | table | bullist numlist |"
    });
    </script>
    <script src="{% static 'custom_admin/js/custom_form_behavior.js' %}"></script>

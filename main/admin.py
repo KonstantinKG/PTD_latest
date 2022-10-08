@@ -1,5 +1,4 @@
 from django.contrib import admin
-from ckeditor.widgets import CKEditorWidget
 from tinymce.widgets import TinyMCE
 from django.utils.safestring import mark_safe
 from django import forms
@@ -103,7 +102,7 @@ class ClanAdmin(admin.ModelAdmin):
 ptd_site.register(Clan, ClanAdmin)
 
 class NewsAdminForm(forms.ModelForm):
-   content = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}), label='Текст новости')
+   content = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}), label='Текст новости', help_text='Если вы копируете текст из сторонних источников и вставляете в это поле не забывается нажимать кнопку Т с крестиком снизу')
    class Meta:
       model = News
       fields = '__all__'

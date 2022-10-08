@@ -45,7 +45,6 @@ INSTALLED_APPS = [
 
     'channels',
     'captcha',
-    'ckeditor',
     'tinymce',
     'django_crontab',
     "debug_toolbar",
@@ -143,7 +142,7 @@ DATABASES = {
 #     }
 # }
 
-db_from_env = dj_database_url.config(conn_max_age=0)
+db_from_env = dj_database_url.config(conn_max_age=5)
 DATABASES['default'].update(db_from_env)
 
 # Password validation
@@ -247,39 +246,3 @@ RECAPTCHA_PUBLIC_KEY = os.environ.get(
 RECAPTCHA_PRIVATE_KEY = os.environ.get(
     'RECAPTCHA_PRIVATE_KEY', '6Le5PLIgAAAAADNd-a66kfmxhupP-jIPsj2VNFRo')
 RECAPTCHA_REQUIRED_SCORE = 0.6
-
-# CKEDITOR SETTINGS
-CKEDITOR_CONFIGS = {
-    'default': {
-        'skin': 'moono',
-        'toolbar_Basic': [
-            ['Source', '-', 'Bold', 'Italic']
-        ],
-        'toolbar_YourCustomToolbarConfig': [
-            {'name': 'basicstyles',
-             'items': ['Bold', 'Italic', 'Underline', 'Strike']},
-            {'name': 'paragraph',
-             'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-']},
-            {'name': 'insert',
-             'items': ['Smiley', 'SpecialChar']},
-        ],
-        'toolbar': 'YourCustomToolbarConfig',
-        'tabSpaces': 4,
-        'extraPlugins': ','.join([
-            'uploadimage',  # the upload image feature
-            # your extra plugins here
-            'div',
-            'autolink',
-            'autoembed',
-            'embedsemantic',
-            'autogrow',
-            # 'devtools',
-            'widget',
-            'lineutils',
-            'clipboard',
-            'dialog',
-            'dialogui',
-            'elementspath'
-        ]),
-    }
-}

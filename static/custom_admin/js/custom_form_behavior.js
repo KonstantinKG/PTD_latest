@@ -352,3 +352,4 @@ function sendFetch(url, data) {
    return data
 }
    
+let tinymceTextarea = document.querySelector('textarea.tinymce')

@@ -1,30 +1,36 @@
 document.addEventListener("DOMContentLoaded", () => {
    let TournamentForm = document.querySelector('#tournament_form');
-   console.log("fasfasf", TournamentForm);
+
    if (TournamentForm) {
       let TournamentTypo = TournamentForm.querySelector('select[name="typo"]').value;
+      
+      if (TournamentTypo == "") return;
 
-      if (TournamentTypo != "" && TournamentTypo != 1) {
-         let futureTeams = TournamentForm.querySelector('.field-players'),
-            tourSlug = TournamentForm.querySelector('input[name="slug"]').value;
+      let tourSlug = TournamentForm.querySelector('input[name="slug"]').value;
+
+      if (TournamentTypo != 1) {
+         let futureTeams = TournamentForm.querySelector('.field-players');
 
          reformPlayersField(futureTeams, tourSlug, TournamentForm.csrfmiddlewaretoken.value);
 
-         let fieldset = TournamentForm.querySelectorAll('fieldset'),
+         let  fieldsets = TournamentForm.querySelectorAll('fieldset'),
             customEditPanel;
          
-         fieldset = fieldset[fieldset.length-1]
+         fieldset = fieldsets[fieldsets.length-1]
 
          customEditPanel = document.createElement('div');
          customEditPanel.classList.add('submit-row')
          customEditPanel.innerHTML = `
-            <input type="button" onclick='gotoEditTablePage("${tourSlug}");' value="Турнирная таблица">
             <input type="button" onclick='gotoEditTeamPage("${tourSlug}");' value="Добавить/Редактиовать команды">
             <input type="button" onclick='gotoDeleteTeamPage("${tourSlug}")' value="Удалить команды">
          `
-         console.log('asfasfsafsa', fieldset)
+
          fieldset.after(customEditPanel);
       }
+
+      let defaultPanel = TournamentForm.querySelector('.submit-row');
+
+      defaultPanel.insertAdjacentHTML('beforeend', `<input type="button" onclick='gotoEditTablePage("${tourSlug}");' value="Турнирная таблица">`)
    }   
 
 

@@ -195,7 +195,7 @@ class News(models.Model):
    image = models.ImageField(upload_to="news/%Y/%m/%d/", null=True, blank=True, verbose_name="Изображение")
    data = models.FileField(upload_to="news/%Y/%m/%d/",null=True, blank=True, verbose_name="Файл")
    title = models.CharField(max_length=500, verbose_name='Заголовок')
-   content = models.TextField(verbose_name='Текст новости')
+   content = models.TextField(verbose_name='Текст новости', help_text='Если вы копируете текст из сторонних источников и вставляете в это поле не забывается нажимать кнопку Т с крестиком снизу')
 
    date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
    is_published = models.BooleanField(default=True, verbose_name="Опубликовать")
