@@ -87,7 +87,7 @@
 						<a href="{{ user.team.leader.get_absolute_url }}" class="tables__name">{{ user.team.leader }}<span>Leader</span></a>
 					</div>
 					{% for mate in player.team.players.all %}
-						{% if mate != player %}
+						{% if mate != user.team.leader %}
 							<div class="tables__item _table-item">
 								<li class="tables__type"></li>
 								<a href="{{ mate.get_absolute_url }}" class="tables__name">{{ mate.nickname }}</a>
