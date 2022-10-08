@@ -4,6 +4,8 @@ from .forms import *
 from PTD import settings
 from django.core.cache import cache
 from tournaments.models import Tournament
+from django.db import connections
+ 
 
 menu = [
       {'title': "О клане", 'url_name': 'about', 'current': ''},
@@ -39,5 +41,7 @@ class DataMixin:
             context['aside_tours'] = cache.get_or_set('aside_tours', Tournament.objects.all()[:5], 60 * 3)
 
             context['recaptcha_site_key'] = settings.RECAPTCHA_PUBLIC_KEY
+
+            connections.close_all() 
 
             return context
