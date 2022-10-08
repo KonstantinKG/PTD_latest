@@ -2097,7 +2097,7 @@ if (infoTournamentForm) {
 				popupOpen(popup)
 
 				// И ожидаем подтверждение
-				cover = fetchSender.bind(undefined, url, data, popup);
+				cover = fetchSender.bind(this, url, data, popup);
 				popup.querySelector('.popup__btn-agree').addEventListener('click', cover);
 				return;
 			}
@@ -2120,7 +2120,7 @@ if (infoTournamentForm) {
 	// Фетч для участия на турнире или чтобы покинуть турнир
 	let fetchSender = (url, data, popup = undefined) => {
 		if (popup) {
-			popup.querySelector('.popup__btn-agree').removeEventListener('click', cover);
+			popup.querySelector('.popup__btn-agree').removeEventListener('click', fetchSender);
 			popupClose(popup);
 		}
 
