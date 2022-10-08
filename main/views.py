@@ -6,6 +6,7 @@ from .models import *
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Count, F, Q
 from django.http import HttpResponse, JsonResponse, HttpResponseServerError, HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView, View, UpdateView
@@ -103,6 +104,12 @@ class ProfileView(LoginRequiredMixin, DetailView, DataMixin):
    template_name = 'main/profile.html'
    slug_url_kwarg = 'user_slug'
    context_object_name = 'player'
+
+   def get(self, request):
+      if not request.user.is_authenticated:
+         raise PermissionDenied()
+
+      return super().get(request)
 
    def get_context_data(self, *, object_list=None, **kwargs):
       context = super().get_context_data(**kwargs)
