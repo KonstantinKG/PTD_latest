@@ -156,6 +156,7 @@ class Tournament(models.Model):
       else:
          total = self.players.count()
 
+      print(total / self.places)
       if total / self.places <= 0.3:
          self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['low_spaces'], code=Status.CLOSING, priority=2)[0]
       else:

@@ -74,6 +74,9 @@
                      {% if not user.is_authenticated %}
                         <div class="info-tournament__note">Для участия в турнире необходимо войти в аккаунт или зарегистрироваться.</div>
                         <button type="submit" class="info-tournament__form-button _authorize">Авторизоваться</button>
+                     {% elif not user.team %}
+                     <div class="info-tournament__note">Чтобы учавствовать в турнире, вам необходимо вступить или создать команду.</div>
+                        
                      {% elif through_model.is_self_team_playing and through_model.is_user_leader %}
                         <button type="submit" class="info-tournament__form-button disabled _unroll">Не участвовать</button>
 
