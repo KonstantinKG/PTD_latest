@@ -1,7 +1,6 @@
 import json
 from .models import *
 from main.mixins import *
-from django.core.cache import cache
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, View
 from django.db.models import Sum, F
@@ -28,7 +27,7 @@ class TournamentView(ListView, DataMixin):
       return dict(list(context.items()) + list(c_def.items()))
 
    def get_queryset(self):
-      return cache.get_or_set('tours', Tournament.objects.all().select_related('mode'), 60 * 3)
+      return Tournament.objects.all().select_related('mode')
 
       
 
@@ -43,8 +42,8 @@ class  SingleTournamentView(DetailView, DataMixin):
       c_def = self.get_user_context(
          title='Турниры',
          curr_page_url='tours',
-         players = cache.get_or_set('players', self._get_players(), 60 * 3),
-         through_model=cache.get_or_set('through_model', self._get_teams(), 60 * 3),
+         players = self._get_players(),
+         through_model=self._get_teams(),
          self_user_tours = len(self.request.user.tournament.all()) if self.request.user.is_authenticated else None,
       )
       return dict(list(context.items()) + list(c_def.items()))

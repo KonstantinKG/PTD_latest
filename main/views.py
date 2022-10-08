@@ -3,7 +3,6 @@ from .backends import *
 from .forms import *
 from .mixins import *
 from .models import *
-from django.core.cache import cache
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -22,7 +21,7 @@ class AboutView(View, DataMixin):
       return render(request, self.template, self.get_user_context(
          title='О клане',
          curr_page_url='about',
-         page=cache.get_or_set('page', AboutPageModel.objects.first(), 60 * 15)
+         page=AboutPageModel.objects.first()
       ))
 
 # СОСТАВ
@@ -34,12 +33,11 @@ class MembersView(ListView, DataMixin):
    def get_context_data(self, *, object_list=None, **kwargs):
       context = super().get_context_data(**kwargs)
       clans = self._group_by_clans()
-      print(clans)
       c_def = self.get_user_context(
          title='Состав',
          curr_page_url='members',
-         clans=cache.get_or_set('clans', clans, 60 * 5),
-         staff=cache.get_or_set('staff', User.objects.filter(is_staff=True).select_related('position'), 60 * 5)
+         clans=clans,
+         staff=User.objects.filter(is_staff=True).select_related('position')
       )
       return dict(list(context.items()) + list(c_def.items()))
 
@@ -48,7 +46,6 @@ class MembersView(ListView, DataMixin):
 
    def _group_by_clans(self):
       clans = Clan.objects.annotate(total = Count('users'))
-      print(clans)
       queryset = []
 
       if clans:
@@ -83,7 +80,7 @@ class NewsView(ListView, DataMixin):
       return dict(list(context.items()) + list(c_def.items()))
 
    def get_queryset(self):
-      return cache.get_or_set('news', News.objects.filter(is_published=True), 60 * 2)
+      return News.objects.filter(is_published=True)
 
 # ОТДЕЛЬНАЯ НОВОСТЬ
 class  SingleNewView(DetailView, DataMixin):
