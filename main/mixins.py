@@ -4,7 +4,6 @@ from .forms import *
 from PTD import settings
 from django.core.cache import cache
 from tournaments.models import Tournament
-from django.db import connections
  
 
 menu = [
@@ -20,7 +19,9 @@ class DataMixin:
             context = kwargs
 
             if self.request.user.is_authenticated:
+                  print(self.request.user.is_online)
                   self.request.user.extend_online()
+                  print(self.request.user.is_online)
                   context['messages'] = Messages.objects.all().select_related('user', 'user__position')
 
             user_menu = menu.copy()
@@ -41,7 +42,5 @@ class DataMixin:
             context['aside_tours'] = cache.get_or_set('aside_tours', Tournament.objects.all()[:5], 60 * 3)
 
             context['recaptcha_site_key'] = settings.RECAPTCHA_PUBLIC_KEY
-
-            connections.close_all() 
 
             return context

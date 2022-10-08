@@ -28,7 +28,7 @@ class TournamentView(ListView, DataMixin):
       return dict(list(context.items()) + list(c_def.items()))
 
    def get_queryset(self):
-      return cache.get_or_set('tours', Tournament.objects.all().select_related('mode'), 60 * 10)
+      return cache.get_or_set('tours', Tournament.objects.all().select_related('mode'), 60 * 3)
 
       
 
@@ -43,8 +43,8 @@ class  SingleTournamentView(DetailView, DataMixin):
       c_def = self.get_user_context(
          title='Турниры',
          curr_page_url='tours',
-         players = cache.get_or_set('players', self._get_players(), 60 * 10),
-         through_model=cache.get_or_set('through_model', self._get_teams(), 60 * 10),
+         players = cache.get_or_set('players', self._get_players(), 60 * 3),
+         through_model=cache.get_or_set('through_model', self._get_teams(), 60 * 3),
          self_user_tours = len(self.request.user.tournament.all()) if self.request.user.is_authenticated else None,
       )
       return dict(list(context.items()) + list(c_def.items()))
