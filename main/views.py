@@ -33,10 +33,12 @@ class MembersView(ListView, DataMixin):
 
    def get_context_data(self, *, object_list=None, **kwargs):
       context = super().get_context_data(**kwargs)
+      clans = self._group_by_clans()
+      print(clans)
       c_def = self.get_user_context(
          title='Состав',
          curr_page_url='members',
-         clans=cache.get_or_set('clans', self._group_by_clans(), 60 * 5),
+         clans=cache.get_or_set('clans', clans, 60 * 5),
          staff=cache.get_or_set('staff', User.objects.filter(is_staff=True).select_related('position'), 60 * 5)
       )
       return dict(list(context.items()) + list(c_def.items()))
@@ -46,6 +48,7 @@ class MembersView(ListView, DataMixin):
 
    def _group_by_clans(self):
       clans = Clan.objects.annotate(total = Count('users'))
+      print(clans)
       queryset = []
 
       if clans:
