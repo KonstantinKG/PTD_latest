@@ -136,16 +136,15 @@ class Tournament(models.Model):
    def _check_open_spaces(self):
       total = 0
       if self.typo == '1':
-         total = self.particapants.count()
-      else:
          total = self.players.count()
+      else:
+         total = self.particapants.count()
 
-      print(total / self.places)
-      if total / self.places <= 0.3:
+      if total / self.places >= 0.6:
          self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['low_spaces'], code=Status.CLOSING, priority=2)[0]
       else:
          if self.status.name == settings.STATUS_MSG['low_spaces']:
-            self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['low_spaces'], code=Status.CLOSING, priority=2)[0]
+            self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['open'], code=Status.OPEN, priority=1)[0]
 
    # Проверяет скоро ли начало
    def _check_soon_start(self):
@@ -154,7 +153,7 @@ class Tournament(models.Model):
          return True
       else:
          if self.status.name == settings.STATUS_MSG['soon_start']:
-            self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['open'], code=Status.CLOSING, priority=1)[0]
+            self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['open'], code=Status.OPEN, priority=1)[0]
          return False
 
    # Проверяет если в турнирной таблице произошли изменения
