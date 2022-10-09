@@ -70,7 +70,7 @@ chatSocket.onmessage = function(e){
             `
          }
 
-         chat_body.innerHTML += html
+         chat_body.insertAdjacentHTML('beforeend', html);
          if (is_scroll) scrollToBottom(chat_body);
       } 
       else if (chat_aside_body) {
@@ -108,7 +108,7 @@ chatSocket.onmessage = function(e){
             `
          }
          
-         chat_aside_body.innerHTML += html
+         chat_aside_body.insertAdjacentHTML('beforeend', html);
          if (is_scroll) scrollToBottom(chat_aside_body);
       } 
    }
