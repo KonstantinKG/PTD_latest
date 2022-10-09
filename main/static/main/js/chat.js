@@ -146,12 +146,10 @@ function add_message_listener(form, input, ch_body)
    }
 }
 
-if (document.querySelector('.header__avatar')) {
-   chatSocket.onopen = function(e)
-   {
-      add_message_listener(chat_form, chat_input, chat_body);
-      add_message_listener(chat_aside__form, chat_aaside_input, chat_aside_body);
-   }
+chatSocket.onopen = function(e)
+{
+   add_message_listener(chat_form, chat_input, chat_body);
+   add_message_listener(chat_aside__form, chat_aaside_input, chat_aside_body);
 }
 
 

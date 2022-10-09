@@ -100,7 +100,6 @@ class EmailSender:
       confirm_email = False,
       token_generator=default_token_generator,
    ):
-      print(timer, 'TIMER_____TIMER')
       if not domain_override:
             current_site = get_current_site(request)
             site_name = current_site.name

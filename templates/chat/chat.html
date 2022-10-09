@@ -22,7 +22,7 @@
 				<div class="chat__content">
 					{% for message in messages %}
 						{% if message.user == user %}
-							<div class="chat__user chat__user_me send">
+							<div class="chat__user chat__user_me was">
 								<div class="chat__user-msg">
 									<div class="chat__msg">
 										{{ message }}
@@ -31,7 +31,7 @@
 								</div>
 							</div>
 						{% else %}
-							<div class="chat__user send">
+							<div class="chat__user was">
 								<div class="chat__user-data">
 									<a href="" class="chat__user-avatar">
 										{% if message.user.photo %}

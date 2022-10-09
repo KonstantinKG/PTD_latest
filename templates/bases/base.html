@@ -85,7 +85,7 @@
 
 						<!-- Проверка если сообщение пренадлежит текущему пользователю -->
 						{% if message.user == user %}
-						<div class="chat-aside__user chat-aside__user_me send">
+						<div class="chat-aside__user chat-aside__user_me was">
 							<div class="chat-aside__user-msg">
 								<div class="chat-aside__msg">
 									{{ message }}
@@ -96,7 +96,7 @@
 
 						{% else %}
 
-						<div class="chat-aside__user send">
+						<div class="chat-aside__user was">
 							<div class="chat-aside__user-data">
 								<a href="" class="chat-aside__user-avatar">
 									<picture>

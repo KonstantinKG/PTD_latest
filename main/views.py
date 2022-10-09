@@ -292,7 +292,7 @@ class DeleteTeamVeiw(LoginRequiredMixin, View):
       user = request.user
       team = user.team
 
-      if team is None or not self.is_ajax(): 
+      if team is None: 
          return HttpResponseRedirect(reverse('about'))
 
       if team.leader == user: 

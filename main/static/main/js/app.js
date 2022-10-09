@@ -162,25 +162,26 @@ if (iconBurger) {
 
 // ========================ADD-CHAT-TO-MENU===============================
 const menuList = document.querySelector('.menu__list');
-const mediaQuery = window.matchMedia('(max-width: 1024px)')
+const mediaQuery = window.matchMedia('(max-width: 1024px)');
+let chatItem = '';
+
 if (menuList) {
 	mediaQuery.addEventListener("change", tabletChange);
+	chatItem = menuList.querySelector('li[data-chat=""]')
 	tabletChange(mediaQuery);
 }
 
 function tabletChange(mediaQuery) {
 	if (mediaQuery.matches) {
 		if (!menuList.lastElementChild.hasAttribute('data-chat')) {
-			menuList.insertAdjacentHTML(
-				"beforeend",
-				`<li data-chat=""><a href="chat.html" class="menu__link">Чат</a></li>`
-			)
+			menuList.append(chatItem);
 		}
 	} else {
 		if (menuList.lastElementChild.hasAttribute('data-chat')) {
 			menuList.lastElementChild.remove();
 		}
 	}
+	chatItem.removeAttribute('style');
 }
 ;// CONCATENATED MODULE: ./src/js/modules/script.js
 // ========================ASIDE-OPEN===============================
@@ -1573,7 +1574,7 @@ const loginForm = document.querySelector('.login__form'),
    resendRecoveryEmailForm = document.querySelector('.resend-recovery-email-form'),
    resendActivationEmailForm = document.querySelector('.resend-activation-email-form'),
    resendActivationEmailButton = document.querySelector('.resend-activation-email-btn'),
-	recaptchaKey = document.querySelector('.recaptcha_site_key');
+   recaptchaKey = document.querySelector('.recaptcha_site_key');
 
 // FETCH для формы авторизации
 if (loginForm) {
@@ -1598,10 +1599,15 @@ if (registerForm) {
          registerForm,
          successRegister
       )
+      resetForm(registerForm);
    })
 }
 function successRegister(data = {}) {
-	popupOpen(document.getElementById('notifyTimerActivationPopup'));
+   let notifyTimerActivationPopup = document.getElementById('notifyTimerActivationPopup'),
+      form = notifyTimerActivationPopup.querySelector('form');
+
+   popupOpen(notifyTimerActivationPopup);
+   initTimers(data, form, is_recov = false);
 }
 
 
@@ -1620,6 +1626,7 @@ function successResetEmail(obj = {}) {
    popupOpen(document.getElementById('notifyTimerRecoveryPopup'));
 
    if (Object.keys(obj).length == 0) return;
+   if (recovEmailTimer) clearInterval(recovEmailTimer);
 
    initTimers(obj, resendRecoveryEmailForm);
 }
@@ -1652,7 +1659,7 @@ if (resendActivationEmailForm) {
          err_field.innerText = '';
          createFetchRequest(
             resendActivationEmailForm,
-            successResendEmail
+            successResendActivationEmail
          )
          return;
       }
@@ -1661,7 +1668,7 @@ if (resendActivationEmailForm) {
          err_field.innerText = '';
          createFetchRequest(
             resendActivationEmailForm,
-            successResendEmail
+            successResendActivationEmail
          )
       }
       else {
@@ -1676,14 +1683,24 @@ if (resendActivationEmailForm) {
 
       createFetchRequest(
          resendActivationEmailForm,
-         successResendEmail
+         successResendActivationEmail
       )
    })
 }
-function successResendEmail(obj = {}) {
+function successResendRecoveryEmail(obj = {}) {
    if (Object.keys(obj).length == 0) return;
 
+   if (activeEmailTimer) clearInterval(activeEmailTimer);
+
    initTimers(obj);
+}
+
+function successResendActivationEmail(obj = {}) {
+   if (Object.keys(obj).length == 0) return;
+
+   if (activeEmailTimer) clearInterval(activeEmailTimer);
+
+   initTimers(obj, NaN, false);
 }
 
 
@@ -1697,7 +1714,7 @@ if (resendRecoveryEmailForm) {
          err_field.innerText = '';
          createFetchRequest(
             resendRecoveryEmailForm,
-            successResendEmail
+            successResendRecoveryEmail
          )
          return;
       }
@@ -1706,7 +1723,7 @@ if (resendRecoveryEmailForm) {
          err_field.innerText = '';
          createFetchRequest(
             resendRecoveryEmailForm,
-            successResendEmail
+            successResendRecoveryEmail
          )
       }
       else {
@@ -1852,7 +1869,7 @@ if (createTeamForm) {
 
       let url = createTeamForm.getAttribute('action'),
          checkboxs = createTeamForm.querySelectorAll('input[name=players]:checked'),
-			temp = new Array(),
+         temp = new Array(),
          data = new FormData(createTeamForm);
 
       checkboxs.forEach((item) => {
@@ -1883,15 +1900,15 @@ if (createTeamForm) {
 const editTeamName = document.getElementById('editTeamName')
 
 if (editTeamName) {
-	let timeout = '';
+   let timeout = '';
    editTeamName.addEventListener('change', (e) => {
       e.preventDefault();
       let url = editTeamName.getAttribute('data-url'),
          data = new FormData();
-		
-		if (timeout) clearTimeout(timeout)
 
-		editTeamName.classList.add('_loading');
+      if (timeout) clearTimeout(timeout)
+
+      editTeamName.classList.add('_loading');
       data.append('name', editTeamName.value);
 
       fetch(url, {
@@ -1908,19 +1925,19 @@ if (editTeamName) {
          .then(data => {
             if (data && 'errors' in data) {
                editTeamName.value = '';
-					editTeamName.classList.add('_error');
-					editTeamName.classList.remove('_loading');
+               editTeamName.classList.add('_error');
+               editTeamName.classList.remove('_loading');
                editTeamName.setAttribute('placeholder', data['errors'][editTeamName.name]);
             }
             else {
-					editTeamName.classList.remove('_error');
-					editTeamName.classList.remove('_loading');
-					editTeamName.classList.add('_loaded');
+               editTeamName.classList.remove('_error');
+               editTeamName.classList.remove('_loading');
+               editTeamName.classList.add('_loaded');
 
-					timeout = setTimeout(() => {
-						editTeamName.classList.remove('_loaded');
-					}, 3000)
-				}
+               timeout = setTimeout(() => {
+                  editTeamName.classList.remove('_loaded');
+               }, 3000)
+            }
          })
    })
 }
@@ -1953,11 +1970,11 @@ if (editTeamAddPlayersBtn) {
             .then(response => {
                let notification = document.getElementById('notifyPopup');
                if (response.ok) {
-						notification.querySelector('.popup__message p').innerText = 'Приглашения успешно разосланы';
-						checkboxs.forEach((item) => {
-							item.closest('.list-players__item').remove();
-						})
-					}
+                  notification.querySelector('.popup__message p').innerText = 'Приглашения успешно разосланы';
+                  checkboxs.forEach((item) => {
+                     item.closest('.list-players__item').remove();
+                  })
+               }
                else notification.querySelector('.popup__message p').innerText = 'На сервере произошла ошибка. Не получилось отправить приглашения';
 
                popupOpen(notification);
@@ -1994,11 +2011,11 @@ if (deleteTeamAddPlayersBtn) {
             .then(response => {
                let notification = document.getElementById('notifyPopup');
                if (response.ok) {
-						notification.querySelector('.popup__message p').innerText = 'Игроки успешно удалены из команды';
-						checkboxs.forEach((item) => {
-							item.closest('.list-players__item').remove();
-						})
-					}
+                  notification.querySelector('.popup__message p').innerText = 'Игроки успешно удалены из команды';
+                  checkboxs.forEach((item) => {
+                     item.closest('.list-players__item').remove();
+                  })
+               }
                else notification.querySelector('.popup__message p').innerText = 'На сервере произошла ошибка. Не получилось удалить участников команды.';
 
                popupOpen(notification);
@@ -2062,78 +2079,78 @@ function acceptTeamHandler(e) {
 let infoTournamentForm = document.querySelector('.info-tournament__form');
 
 if (infoTournamentForm) {
-	infoTournamentForm.addEventListener('submit', (e) => {
-		// Отмена отправки при нажатии ENTER
-		if (e.code == 13) {
-			e.preventDefault();
-			return;
-		}
+   infoTournamentForm.addEventListener('submit', (e) => {
+      // Отмена отправки при нажатии ENTER
+      if (e.code == 13) {
+         e.preventDefault();
+         return;
+      }
 
-		let infoTournamentSubmitBtn = infoTournamentForm.querySelector('.info-tournament__form-button')
+      let infoTournamentSubmitBtn = infoTournamentForm.querySelector('.info-tournament__form-button')
 
-		// Если содержит класс _authorize нужно авторизовать пользователя
-		if (infoTournamentSubmitBtn.classList.contains('_authorize')){
-			e.preventDefault();
-			popupOpen(document.querySelector('#mainPopup'));
-			return;
-		}
+      // Если содержит класс _authorize нужно авторизовать пользователя
+      if (infoTournamentSubmitBtn.classList.contains('_authorize')) {
+         e.preventDefault();
+         popupOpen(document.querySelector('#mainPopup'));
+         return;
+      }
 
-		// Если кнопка не отключена значит пользователь может участвовать в турнире
-		// Или если же есть класс _unroll то пользователь может покинуть турнир
-		if (!infoTournamentSubmitBtn.classList.contains('disabled') || infoTournamentSubmitBtn.classList.contains('_unroll')) {
-			e.preventDefault();
+      // Если кнопка не отключена значит пользователь может участвовать в турнире
+      // Или если же есть класс _unroll то пользователь может покинуть турнир
+      if (!infoTournamentSubmitBtn.classList.contains('disabled') || infoTournamentSubmitBtn.classList.contains('_unroll')) {
+         e.preventDefault();
 
-			// Создаем формдату, получаем кол-во игроков на турнире, самих игроков и ссылку куда отправлять
-			let data = new FormData(infoTournamentForm),
-				typo = infoTournamentForm.querySelector('input[name="typo"]').value,
-				players = typo == "1" ? undefined : infoTournamentForm.querySelectorAll('input[name=players]:checked'),
-				url = infoTournamentForm.getAttribute('action'),
-				cover = '';
+         // Создаем формдату, получаем кол-во игроков на турнире, самих игроков и ссылку куда отправлять
+         let data = new FormData(infoTournamentForm),
+            typo = infoTournamentForm.querySelector('input[name="typo"]').value,
+            players = typo == "1" ? undefined : infoTournamentForm.querySelectorAll('input[name=players]:checked'),
+            url = infoTournamentForm.getAttribute('action'),
+            cover = '';
 
-			// Если пользователь хочет покинуть турнир
-			if (infoTournamentSubmitBtn.classList.contains('_unroll')) {
-				// Открываем поп ав с подтверждением
-				let popup = document.querySelector('#confirmLeaveTournamentPopup');
-				popupOpen(popup)
+         // Если пользователь хочет покинуть турнир
+         if (infoTournamentSubmitBtn.classList.contains('_unroll')) {
+            // Открываем поп ав с подтверждением
+            let popup = document.querySelector('#confirmLeaveTournamentPopup');
+            popupOpen(popup)
 
-				// И ожидаем подтверждение
-				cover = fetchSender.bind(this, url, data, popup);
-				popup.querySelector('.popup__btn-agree').addEventListener('click', cover);
-				return;
-			}
+            // И ожидаем подтверждение
+            cover = fetchSender.bind(this, url, data, popup);
+            popup.querySelector('.popup__btn-agree').addEventListener('click', cover);
+            return;
+         }
 
-			// Если кол-во игроков не равно кол-ву игроков на турнире
-			if (players && players.length != 0 && players.length != typo) {
-				let note = infoTournamentForm.querySelector('.info-tournament__note')
-				note.innerText = 'Вы выбрали неправильное кол-во игроков.'
-				return;
-			}
+         // Если кол-во игроков не равно кол-ву игроков на турнире
+         if (players && players.length != 0 && players.length != typo) {
+            let note = infoTournamentForm.querySelector('.info-tournament__note')
+            note.innerText = 'Вы выбрали неправильное кол-во игроков.'
+            return;
+         }
 
-			// Отправляем фетч для участия на турнире
-			fetchSender(url, data);
-		}
-		else {
-			e.preventDefault();
-		}
-	})
+         // Отправляем фетч для участия на турнире
+         fetchSender(url, data);
+      }
+      else {
+         e.preventDefault();
+      }
+   })
 
-	// Фетч для участия на турнире или чтобы покинуть турнир
-	let fetchSender = (url, data, popup = undefined) => {
-		if (popup) {
-			popup.querySelector('.popup__btn-agree').removeEventListener('click', fetchSender);
-			popupClose(popup);
-		}
+   // Фетч для участия на турнире или чтобы покинуть турнир
+   let fetchSender = (url, data, popup = undefined) => {
+      if (popup) {
+         popup.querySelector('.popup__btn-agree').removeEventListener('click', fetchSender);
+         popupClose(popup);
+      }
 
-		fetch(url, {
-			method: 'POST',
-			body: data
-		})
-			.then(response => {
-				if (response.redirected) window.location.replace(response.url);
+      fetch(url, {
+         method: 'POST',
+         body: data
+      })
+         .then(response => {
+            if (response.redirected) window.location.replace(response.url);
 
-				if (response.ok) window.location.reload();
-			})
-	}
+            if (response.ok) window.location.reload();
+         })
+   }
 }
 // ++++++++++++++++++++ //
 // УЧАСТИЕ В ТУРНИРЕ КОНЕЦ //
@@ -2149,8 +2166,8 @@ function createFetchRequest(form, func) {
    let url = form.getAttribute('action');
    let formData = new FormData(form);
    let data = prepareData(formData);
-	
-	getRecaptchaToken();
+
+   getRecaptchaToken();
 
    let popup = form.closest('.popup');
 
@@ -2177,7 +2194,7 @@ function createFetchRequest(form, func) {
       })
       .then(data => {
          if (data) {
-				console.log(data)
+            console.log(data)
             if ('errors' in data) displayErrors(form, data['errors'])
             else func({ data, form });
          }
@@ -2201,31 +2218,91 @@ function displayErrors(form, errors) {
 
    formInputs.forEach(input => {
       if (input.name in errors) {
-         input.setAttribute('placeholder', errors[input.name])
          input.classList.add('_error');
-         input.value = ''
+         input.value = '';
       }
    });
 
    if (!commonErrorsField) return
 
-   commonErrorsField.innerText = '';
-
-   if ('server' in errors) commonErrorsField.innerText = 'На сервере произошла ошибка. Попробуйте отправить форму еще раз';
-   else if ('email_failed' in errors) commonErrorsField.innerText = errors['email_failed'];
+   commonErrorsField.innerHTML = '';
 
    if ('__all__' in errors && errors['__all__'].length > 0) {
-		
-		let popupNote = form.querySelector('.popup__note');
+      let popupNote = form.querySelector('.popup__note');
       if (popupNote && errors['__all__'].includes('Эта учетная запись отключена.')) {
          popupNote.classList.add('_active');
          return
       }
-      else if (popupNote) form.querySelector('.popup__note').classList.remove('_active');
+      else if (popupNote) popupNote.classList.remove('_active');
+   }
 
-      commonErrorsField.innerText = errors['__all__'][0];
+   for (let value of Object.values(errors)) {
+      commonErrorsField.innerHTML += `<br>${value}`
    }
 }
+
+// Отчистка формы
+function resetForm(form) {
+   // clearing inputs
+   var inputs = form.getElementsByTagName('input');
+   for (var i = 0; i < inputs.length; i++) {
+      switch (inputs[i].type) {
+         // case 'hidden':
+         case 'text':
+         case 'password':
+         case 'email':
+            inputs[i].value = '';
+            break;
+         case 'radio':
+         case 'checkbox':
+            inputs[i].checked = false;
+      }
+   }
+
+   // clearing selects
+   var selects = form.getElementsByTagName('select');
+   for (var i = 0; i < selects.length; i++)
+      selects[i].selectedIndex = 0;
+
+   // clearing textarea
+   var text = form.getElementsByTagName('textarea');
+   for (var i = 0; i < text.length; i++)
+      text[i].innerHTML = '';
+
+   return false;
+}
+
+// function displayErrors(form, errors) {
+//    const formInputs = form.querySelectorAll('input')
+//    const commonErrorsField = form.querySelector('.popup__error')
+
+//    formInputs.forEach(input => {
+//       if (input.name in errors) {
+//          input.setAttribute('placeholder', errors[input.name])
+//          input.classList.add('_error');
+//          input.value = ''
+//       }
+//    });
+
+//    if (!commonErrorsField) return
+
+//    commonErrorsField.innerText = '';
+
+//    if ('server' in errors) commonErrorsField.innerText = 'На сервере произошла ошибка. Попробуйте отправить форму еще раз';
+//    else if ('email_failed' in errors) commonErrorsField.innerText = errors['email_failed'];
+
+//    if ('__all__' in errors && errors['__all__'].length > 0) {
+
+// 		let popupNote = form.querySelector('.popup__note');
+//       if (popupNote && errors['__all__'].includes('Эта учетная запись отключена.')) {
+//          popupNote.classList.add('_active');
+//          return
+//       }
+//       else if (popupNote) form.querySelector('.popup__note').classList.remove('_active');
+
+//       commonErrorsField.innerText = errors['__all__'][0];
+//    }
+// }
 
 // Получение куки
 function forms_getCSRF_TOKEN() {
@@ -2234,32 +2311,32 @@ function forms_getCSRF_TOKEN() {
 
 
 function getRecaptchaToken() {
-	if (recaptchaKey) {
-		grecaptcha.ready(function() {
-			grecaptcha.execute(recaptchaKey.value, {action: 'submit'}).then(function(token) {
-				let csrf = forms_getCSRF_TOKEN();
-				if (csrf) {
-					fetch("../service/recaptcha", {
-						method: "POST",
-						credentials: "same-origin",
-						headers: {
-							"X-Requested-With": "XMLHttpRequest",
-							"X-CSRFToken": csrf,
-						},
-						body: JSON.stringify(
-							{
-								"token": token
-							}
-						)
-					})
-					.then(response => {
-						if (response.ok) console.log('Recaptcha verified')
-						else console.log('Server error')
-					})
-				}
-			});
-		})
-	}
+   if (recaptchaKey) {
+      grecaptcha.ready(function () {
+         grecaptcha.execute(recaptchaKey.value, { action: 'submit' }).then(function (token) {
+            let csrf = forms_getCSRF_TOKEN();
+            if (csrf) {
+               fetch("../service/recaptcha", {
+                  method: "POST",
+                  credentials: "same-origin",
+                  headers: {
+                     "X-Requested-With": "XMLHttpRequest",
+                     "X-CSRFToken": csrf,
+                  },
+                  body: JSON.stringify(
+                     {
+                        "token": token
+                     }
+                  )
+               })
+                  .then(response => {
+                     if (response.ok) console.log('Recaptcha verified')
+                     else console.log('Server error')
+                  })
+            }
+         });
+      })
+   }
 }
 
 // ++++++++++++++++++++ //

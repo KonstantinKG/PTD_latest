@@ -87,8 +87,7 @@
 {% endblock %}
 
 
-{% if request.user == player %}
-{% block profile_popups %}
+{% block extrapopups %}
 <div class="popup" id="confirmRemovePopup">
    <div class="popup__body">
       <div class="popup__content">
@@ -113,4 +112,3 @@
    </div>
 </div>
 {% endblock %}
-{% endif %}
