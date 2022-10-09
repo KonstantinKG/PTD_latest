@@ -577,9 +577,6 @@ if (search) {
 			search_alert.textContent = '';
 			search_alert.classList.remove('_show')
 		}
-
-		if (count >= 1) seacrhItems.classList.add('_active');
-		else seacrhItems.classList.remove('_active');
 	}
 }
 
@@ -1883,6 +1880,7 @@ if (createTeamForm) {
       })
          .then(response => {
             if (response.redirected) window.location.replace(response.url);
+
             if (response.ok) return response.json();
             else {
                displayErrors(editProfileForm, { 'server': '500' });
@@ -1890,7 +1888,7 @@ if (createTeamForm) {
             }
          })
          .then(data => {
-            if (data && 'errors' in data) displayErrors(editProfileForm, data['errors']);
+            if (data && 'errors' in data) displayErrors(createTeamForm, data['errors']);
             else return;
          })
    })
@@ -2223,22 +2221,34 @@ function displayErrors(form, errors) {
       }
    });
 
-   if (!commonErrorsField) return
+   if (commonErrorsField) {
+		commonErrorsField.innerHTML = '';
 
-   commonErrorsField.innerHTML = '';
+		if ('__all__' in errors && errors['__all__'].length > 0) {
+			let popupNote = form.querySelector('.popup__note');
+			if (popupNote && errors['__all__'].includes('Эта учетная запись отключена.')) {
+				popupNote.classList.add('_active');
+				return
+			}
+			else if (popupNote) popupNote.classList.remove('_active');
+		}
+	
+		for (let value of Object.values(errors)) {
+			commonErrorsField.innerHTML += `<br>${value}`
+		}
+	}
+	else {
+		let notifyPopup = document.querySelector('#notifyPopup'),
+			popupMsg = notifyPopup.querySelector('.popup__message p');
 
-   if ('__all__' in errors && errors['__all__'].length > 0) {
-      let popupNote = form.querySelector('.popup__note');
-      if (popupNote && errors['__all__'].includes('Эта учетная запись отключена.')) {
-         popupNote.classList.add('_active');
-         return
-      }
-      else if (popupNote) popupNote.classList.remove('_active');
-   }
+		popupMsg.innerHTML = '';
 
-   for (let value of Object.values(errors)) {
-      commonErrorsField.innerHTML += `<br>${value}`
-   }
+		for (let value of Object.values(errors)) {
+			popupMsg.innerHTML += `<br>${value}`
+		}
+
+		popupOpen(notifyPopup);
+	}
 }
 
 // Отчистка формы

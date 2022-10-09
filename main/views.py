@@ -190,9 +190,6 @@ class CreateTeamView(LoginRequiredMixin, CreateView, DataMixin):
       )
       return dict(list(context.items()) + list(c_def.items()))
 
-   def clean(self):
-      pass
-
    def form_valid(self, form):
       self.object = form.save()
 
@@ -202,6 +199,9 @@ class CreateTeamView(LoginRequiredMixin, CreateView, DataMixin):
       self.request.user.save()
 
       return HttpResponseRedirect(self.get_success_url())
+
+   def form_invalid(self, form):
+      return JsonResponse({'errors': form.errors})
 
    def get_success_url(self):
       self.success_url = self.request.user.get_absolute_url()
