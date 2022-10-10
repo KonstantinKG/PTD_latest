@@ -433,17 +433,18 @@ class UserConfirmView(View):
 
       if code_post:
          uidb64 = request.session.get(str(code_post), False)
-         self.user = self.get_user(uidb64)
+         print(uidb64)
 
          if code_tries <= 0:
             return JsonResponse({'errors': {'__all__': ['Попытки на ввод кода закончились. Отправьте письмо повторно']}})
 
          request.session['code_tries'] = code_tries - 1
 
-         if uidb64 != False and self.user:
-            request.session['reset_confirmed'] = True
+         if uidb64 != False :
+            request.session['confirmed_user'] = True
             request.session['uid'] = uidb64
 
+            self.user = self.get_user(uidb64)
             self.user.is_active = True
             self.user.save()
 
