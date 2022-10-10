@@ -33,7 +33,7 @@
 						{% else %}
 							<div class="chat__user was">
 								<div class="chat__user-data">
-									<a href="" class="chat__user-avatar">
+									<a href="{{ message.user.get_absolute_url }}" class="chat__user-avatar">
 										{% if message.user.photo %}
 										<picture>
 											<source srcset="{{ message.user.photo.url }}" type="image/webp"><img
