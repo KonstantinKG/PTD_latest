@@ -1,6 +1,7 @@
 from PTD import settings
 import smtplib
 import requests
+import random
 from datetime import datetime
 from django.core.mail import EmailMultiAlternatives
 from django.template import loader
@@ -107,7 +108,9 @@ class EmailSender:
       else:
          site_name = domain = domain_override
 
+
       user_email = user.email
+      uid = urlsafe_base64_encode(force_bytes(user.pk))
       context = {
          "email": user_email,
          'from_email': from_email,
@@ -115,7 +118,7 @@ class EmailSender:
          "site_name": site_name,
          'domain': domain,
          "user": user,
-         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+         "uid": uid,
          "protocol": "https" if use_https else "http",
              **(extra_email_context or {}),
       }
@@ -125,7 +128,6 @@ class EmailSender:
          email_template_name="registration/confirm_user_email.html"
 
          token = token_generator.make_token(user)
-         request.session['confirm_token'] = token
 
          context.update({
             "token": token
@@ -136,11 +138,18 @@ class EmailSender:
          email_template_name="registration/password_reset_email.html"
 
          token = token_generator.make_token(user)
-         request.session['reset_token'] = token
 
          context.update({
             "token": token
-         }) 
+         })
+
+      code = random.randint(100000, 999999)
+      request.session['code_tries'] = 5
+      request.session[str(code)] = uid
+
+      context.update({
+         "code": code
+      }) 
 
       try:
          request.session['email'] = user_email
@@ -168,5 +177,6 @@ class EmailSender:
          return JsonResponse({'resend': {
             'tries': tries,
             'timer': timer,
+            'email_end': user_email[user_email.find('@')+1:],
             'error': ''
          }})

@@ -256,7 +256,6 @@ class ResetEmailView(View, EmailSender, ServiceMixin):
             reset_email=True
          )
 
-      print(form.errors)
       return JsonResponse({'errors': form.errors})
 
 # Password Recovery Confirmation View
@@ -296,6 +295,34 @@ class UserRecoveryConfirmView(View):
                )
                return HttpResponseRedirect(redirect_url)
 
+      return HttpResponseRedirect(reverse('about'))
+
+   def post(self, request):
+      code_post = request.POST.get('code', False)
+      code_tries = request.session.get('code_tries', False)
+
+      if code_post:
+         uidb64 = request.session.get(str(code_post), False)
+
+         if code_tries <= 0:
+            return JsonResponse({'errors': {'__all__': ['Попытки на ввод кода закончились. Отправьте письмо повторно']}})
+
+         request.session['code_tries'] = code_tries - 1
+
+         if uidb64 != False:
+            request.session['reset_confirmed'] = True
+            request.session['uid'] = uidb64
+
+            last_page_url = request.session.get('last_visited_page', False)
+
+            return JsonResponse({'succes': True})
+
+         else:
+            return JsonResponse({'errors': {'__all__': ['Неверный код']}})
+      else:
+         return HttpResponseRedirect(reverse('about'))
+         
+
    def get_user(self, uidb64):
       try:
          uid = urlsafe_base64_decode(uidb64).decode()
@@ -309,9 +336,6 @@ class UserRecoveryConfirmView(View):
       ):
          user = None
       return user
-   
-   def post(self, request):
-      return HttpResponseRedirect(reverse('about'))
 
 # Password Recovery Reset View
 class UserRecoveryResetView(View, ServiceMixin):
@@ -402,6 +426,33 @@ class UserConfirmView(View):
                   token, self.reset_url_token
                )
                return HttpResponseRedirect(redirect_url)
+
+   def post(self, request):
+      code_post = request.POST.get('code', False)
+      code_tries = request.session.get('code_tries', False)
+
+      if code_post:
+         uidb64 = request.session.get(str(code_post), False)
+         self.user = self.get_user(uidb64)
+
+         if code_tries <= 0:
+            return JsonResponse({'errors': {'__all__': ['Попытки на ввод кода закончились. Отправьте письмо повторно']}})
+
+         request.session['code_tries'] = code_tries - 1
+
+         if uidb64 != False and self.user:
+            request.session['reset_confirmed'] = True
+            request.session['uid'] = uidb64
+
+            self.user.is_active = True
+            self.user.save()
+
+            return JsonResponse({'succes': True})
+
+         else:
+            return JsonResponse({'errors': {'__all__': ['Неверный код']}})
+
+      return HttpResponseRedirect(reverse('about'))
 
    def get_user(self, uidb64):
       try:

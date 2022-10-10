@@ -11,8 +11,7 @@ class RegistrationForm(UserCreationForm):
 
    nickname = forms.CharField(label='Ник', widget=forms.TextInput(attrs={'class': 'popup__input'}))
    email = forms.EmailField(label='E-mail', widget=forms.EmailInput(attrs={'class': 'popup__input'}))
-   uid = forms.CharField(label='UID',validators=[RegexValidator("^[0-9]{19}$", 'Некоректный UID')], widget=forms.TextInput(attrs={'class': 'popup__input'}))
-   # telephone = forms.CharField(label='Телефон',validators=[RegexValidator("^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$", 'Некоректный Номер Телефона')], widget=forms.TextInput(attrs={'class': 'popup__input', 'type': 'tel'}))
+   uid = forms.CharField(label='UID',validators=[RegexValidator("^[0-9]{19}$", 'Некоректный UID. Длина 19 цифр')], widget=forms.TextInput(attrs={'class': 'popup__input'}))
    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'popup__input'}))
    password2 = forms.CharField(label='Повтор', widget=forms.PasswordInput(attrs={'class': 'popup__input'}))
 

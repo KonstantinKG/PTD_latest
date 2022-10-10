@@ -26,12 +26,14 @@ urlpatterns = [
 
    # Password Recovery
    path('recovery/email', ResetEmailView.as_view(), name='recovery'),
+   path('recovery/code', UserRecoveryConfirmView.as_view(), name='recovery_confirm_code'),
    path('recovery/<uidb64>/<token>', UserRecoveryConfirmView.as_view(), name='recovery_confirm'),
    # path('recovery/<uidb64>/<token>', PasswordResetConfirmView.as_view(), name='recovery_confirm'),
    path('recovery/reset', UserRecoveryResetView.as_view(), name='recovery_reset'),
 
    # User Activation
    path('confirm/<uidb64>/<token>', UserConfirmView.as_view(), name='user_confirm'),
+   path('confirm/code', UserConfirmView.as_view(), name='user_confirm_code'),
    
    # Resend Emails (Recovery and Confirmation)
    path('resend/confirm', ResendConfirmEmailView.as_view(), name='resend_confirm_email'),

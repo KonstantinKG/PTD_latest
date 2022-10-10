@@ -1088,7 +1088,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 		})
 
-		console.log('sending')
 		sendChangedTableToServer(data, e.target);
 		initTourTable();
 		setInputsToEditMode();
@@ -1103,7 +1102,7 @@ document.addEventListener('DOMContentLoaded', function () {
          body: JSON.stringify({"data": data}),
          headers: {
             "X-Requested-With": "XMLHttpRequest",
-            "X-CSRFToken": getCSRF_TOKEN()
+            "X-CSRFToken": forms_getCSRF_TOKEN()
          },
       })
          .then(response => {
@@ -1596,15 +1595,18 @@ if (registerForm) {
          registerForm,
          successRegister
       )
-      resetForm(registerForm);
    })
 }
 function successRegister(data = {}) {
    let notifyTimerActivationPopup = document.getElementById('notifyTimerActivationPopup'),
       form = notifyTimerActivationPopup.querySelector('form');
 
+	if ('form' in data) {
+		resetForm(data['form']);
+	}
+
    popupOpen(notifyTimerActivationPopup);
-   initTimers(data, form, is_recov = false);
+   initTimers(data, form, false);
 }
 
 
@@ -1650,7 +1652,55 @@ function successNewPassword(data = {}) {
 if (resendActivationEmailForm) {
    resendActivationEmailForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      let err_field = resendActivationEmailForm.querySelector('.popup__error');
+      let err_field = resendActivationEmailForm.querySelector('.popup__error'),
+			code_field = resendActivationEmailForm.querySelector('input[name="code"]');
+
+		if (code_field && code_field.value != "") {
+			let code = code_field.value;
+
+			if (code.length == 6) {
+				let data = new FormData(),
+					url = code_field.getAttribute('data-url');
+				data.append('code', code);
+
+
+				let popup = resendActivationEmailForm.closest('.popup');
+
+				if (popup) { popup.classList.add('_sending') };
+
+				fetch(url, {
+					method: 'POST',
+					headers: {
+						"X-Requested-With": "XMLHttpRequest",
+						"X-CSRFToken": forms_getCSRF_TOKEN()
+					},
+					body: data
+				})
+					.then(response => {
+						if (response.redirected) window.location.replace(response.url);
+
+						if (response.ok) return response.json();
+				})
+				.then(data => {
+					if ('succes' in data) {
+						window.location.reload();
+						return;
+					}
+					popup.classList.remove('_sending');
+					code_field.value = '';
+
+
+					if (data) {
+						if ('errors' in data) displayErrors(resendActivationEmailForm, data['errors'])
+					}
+				})
+			}
+			else {
+				err_field.innerText = 'Неккоректный формат кода.';
+				code_field.value = '';
+			}
+			return;
+		}
 
       if (!activeEmailTimerSeconds && !activeTries) {
          err_field.innerText = '';
@@ -1705,7 +1755,55 @@ function successResendActivationEmail(obj = {}) {
 if (resendRecoveryEmailForm) {
    resendRecoveryEmailForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      let err_field = resendRecoveryEmailForm.querySelector('.popup__error');
+      let err_field = resendRecoveryEmailForm.querySelector('.popup__error'),
+			code_field = resendRecoveryEmailForm.querySelector('input[name="code"]');
+
+		if (code_field && code_field.value != "") {
+			let code = code_field.value;
+
+			if (code.length == 6) {
+				let data = new FormData(),
+					url = code_field.getAttribute('data-url');
+				data.append('code', code);
+
+
+				let popup = resendRecoveryEmailForm.closest('.popup');
+
+				if (popup) { popup.classList.add('_sending') };
+
+				fetch(url, {
+					method: 'POST',
+					headers: {
+						"X-Requested-With": "XMLHttpRequest",
+						"X-CSRFToken": forms_getCSRF_TOKEN()
+					},
+					body: data
+				})
+					.then(response => {		
+						if (response.redirected) window.location.replace(response.url);
+
+						if (response.ok) return response.json();
+						
+				})
+				.then(data => {
+					if ('succes' in data) {
+						window.location.reload();
+						return;
+					}
+
+					popup.classList.remove('_sending');
+					code_field.value = '';
+					if (data) {
+						if ('errors' in data) displayErrors(resendRecoveryEmailForm, data['errors'])
+					}
+				})
+			}
+			else {
+				err_field.innerText = 'Неккоректный формат кода.';
+				code_field.value = '';
+			}
+			return;
+		}
 
       if (!recovEmailTimerSeconds && !recovTries) {
          err_field.innerText = '';
@@ -2281,38 +2379,6 @@ function resetForm(form) {
 
    return false;
 }
-
-// function displayErrors(form, errors) {
-//    const formInputs = form.querySelectorAll('input')
-//    const commonErrorsField = form.querySelector('.popup__error')
-
-//    formInputs.forEach(input => {
-//       if (input.name in errors) {
-//          input.setAttribute('placeholder', errors[input.name])
-//          input.classList.add('_error');
-//          input.value = ''
-//       }
-//    });
-
-//    if (!commonErrorsField) return
-
-//    commonErrorsField.innerText = '';
-
-//    if ('server' in errors) commonErrorsField.innerText = 'На сервере произошла ошибка. Попробуйте отправить форму еще раз';
-//    else if ('email_failed' in errors) commonErrorsField.innerText = errors['email_failed'];
-
-//    if ('__all__' in errors && errors['__all__'].length > 0) {
-
-// 		let popupNote = form.querySelector('.popup__note');
-//       if (popupNote && errors['__all__'].includes('Эта учетная запись отключена.')) {
-//          popupNote.classList.add('_active');
-//          return
-//       }
-//       else if (popupNote) form.querySelector('.popup__note').classList.remove('_active');
-
-//       commonErrorsField.innerText = errors['__all__'][0];
-//    }
-// }
 
 // Получение куки
 function forms_getCSRF_TOKEN() {

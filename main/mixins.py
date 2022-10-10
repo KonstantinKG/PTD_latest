@@ -3,7 +3,6 @@ from chat.models import *
 from .forms import *
 from PTD import settings
 from tournaments.models import Tournament
- 
 
 menu = [
       {'title': "О клане", 'url_name': 'about', 'current': ''},
@@ -32,6 +31,14 @@ class DataMixin:
                         item['current'] = 'active'
                   else:
                         item['current'] = ''
+
+            if self.request.session.get('confirmed_user'):
+                  context['confirmed_user'] = True
+                  self.request.session['confirmed_user'] = False
+
+            if self.request.session.get('reset_confirmed'):
+                  context['reset_confirmed'] = True
+                  self.request.session['reset_confirmed'] = False
 
             context['menu'] = user_menu
 

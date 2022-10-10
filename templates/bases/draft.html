@@ -128,7 +128,7 @@
 	{% if not user.is_authenticated %}
 
 	<!-- Поп ап регистрация + авторизация -->
-	<div class="popup {% if request.session.confirmed_user %} open {% endif %}" id="mainPopup">
+	<div class="popup {% if confirmed_user %} open {% endif %}" id="mainPopup">
 		<div class="popup__body">
 			<div class="popup__content">
 				<a href="" class="popup__close close-popup"></a>
@@ -160,7 +160,7 @@
 							Вы не активировали аккаунт. Для подтверждения необходимо отправить сообщение на почту:
 							<a href="#notifyTimerActivationPopup" class="popup-link resend-activation-email-btn">Отправить</a>
 						</div>
-						{% if request.session.confirmed_user %}
+						{% if confirmed_user %}
 						<div class="popup__note _active">Вы успешно активировали аккаунт</div>
 						{% endif %}
 						<div class="popup__error"></div>
@@ -240,7 +240,7 @@
 
 	<!-- Поп ап для ввода нового пароля -->
 
-	{% if request.session.reset_confirmed %}
+	{% if reset_confirmed %}
 	<div class="popup open" id="newPasswordPopup">
 		<div class="popup__body">
 			<div class="popup__content">
@@ -276,11 +276,15 @@
 					<div class="popup__items">
 						<div class="popup__message">
 							<p>Вам на почту было отправлено письмо для активации аккаунта.</p>
+							<p>Перейдите по ссылке нажав на кнопку или скопируйте код в письме отправленном на почту.</p>
 							<p>Повторно отправить письмо: <button class="message-button" type="button"><span
 										class="timer">5:00</span></button> мин</p>
 							<p>Осталось попыток: <span class="tries">5</span></p>
 						</div>
-
+						<div class="popup__item">
+							<input autocomplete="off" type="text" data-url="{% url 'user_confirm_code' %}" name="code" class="popup__input"
+								placeholder="Введите код">
+						</div>
 						<div class="popup__error"></div>
 					</div>
 
@@ -300,9 +304,14 @@
 					<div class="popup__items">
 						<div class="popup__message">
 							<p>Вам на почту было отправлено письмо для востановления пароля.</p>
+							<p>Перейдите по ссылке нажав на кнопку или скопируйте код в письме отправленном на почту.</p>
 							<p>Повторно отправить письмо: <button class="message-button" type="button"><span
 										class="timer">5:00</span></button> мин</p>
 							<p>Осталось попыток: <span class="tries">5</span></p>
+						</div>
+						<div class="popup__item">
+							<input autocomplete="off" type="text" data-url="{% url 'recovery_confirm_code' %}" name="code" class="popup__input"
+								placeholder="Введите код">
 						</div>
 
 						<div class="popup__error"></div>
