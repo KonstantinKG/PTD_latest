@@ -38,12 +38,12 @@ class MembersView(ListView, DataMixin):
          title='Состав',
          curr_page_url='members',
          clans=clans,
-         staff=User.objects.filter(is_staff=True).select_related('position')
+         staff=User.objects.exclude(is_superuser=True).filter(is_staff=True).select_related('position')
       )
       return dict(list(context.items()) + list(c_def.items()))
 
    def get_queryset(self):
-      return User.objects.order_by(F('position__priority').asc(nulls_last=True)).select_related('position')[:9]
+      return User.objects.exclude(Q(clan=None) | Q(is_superuser=True)).order_by(F('position__priority').asc(nulls_last=True)).select_related('position')[:9]
 
    def _group_by_clans(self):
       clans = Clan.objects.annotate(total = Count('users'))
@@ -52,7 +52,7 @@ class MembersView(ListView, DataMixin):
       if clans:
          for clan in clans:
             if (clan is not None):
-               users = User.objects.filter(clan=clan).order_by(F('position__priority').asc(nulls_last=True)).select_related('position')
+               users = User.objects.exclude(is_superuser=True).filter(clan=clan).order_by(F('position__priority').asc(nulls_last=True)).select_related('position')
 
                queryset.append({
                   'name': clan.name,
