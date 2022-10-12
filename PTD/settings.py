@@ -131,16 +131,6 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
-#         'NAME': os.environ.get('POSTGRES_DB', 'db_name'),
-#         'USER': os.environ.get('POSTGRES_USER', 'username'),
-#         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password'),
-#         'PORT': os.environ.get('POSTGRES_PORT', '5432'),
-#     }
-# }
 
 db_from_env = dj_database_url.config(conn_max_age=5)
 DATABASES['default'].update(db_from_env)
@@ -232,17 +222,35 @@ CACHES = {
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST = 'smtp.mail.ru'
-EMAIL_PORT = 2525
+# DEV EMAIL SETTINGS
+
+# EMAIL_HOST = 'smtp.mail.ru'
+# EMAIL_PORT = 2525
+# EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = False
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'muhabrot@mail.ru')
+# EMAIL_HOST_PASSWORD = os.environ.get(
+#     'EMAIL_HOST_PASSWORD', 'cD0eEWTPg3gSwUCJKJ3e')
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'muhabrot@mail.ru')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'platinum.dragons.website@gmail.com')
 EMAIL_HOST_PASSWORD = os.environ.get(
-    'EMAIL_HOST_PASSWORD', 'cD0eEWTPg3gSwUCJKJ3e')
+    'EMAIL_HOST_PASSWORD', 'nfatrtwymmxptqpw')
+
+
+# SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
+# RECAPTCHA_PUBLIC_KEY = os.environ.get(
+#     'RECAPTCHA_PUBLIC_KEY', '6Le5PLIgAAAAAET5Foqsxi5OL2xpo-kQxca30XGF')
+# RECAPTCHA_PRIVATE_KEY = os.environ.get(
+#     'RECAPTCHA_PRIVATE_KEY', '6Le5PLIgAAAAADNd-a66kfmxhupP-jIPsj2VNFRo')
+# RECAPTCHA_REQUIRED_SCORE = 0.6
 
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 RECAPTCHA_PUBLIC_KEY = os.environ.get(
-    'RECAPTCHA_PUBLIC_KEY', '6Le5PLIgAAAAAET5Foqsxi5OL2xpo-kQxca30XGF')
+    'RECAPTCHA_PUBLIC_KEY', '6LfWlHUiAAAAAFrbUB_goJdX4xxz9ymuecN6p8ZV')
 RECAPTCHA_PRIVATE_KEY = os.environ.get(
-    'RECAPTCHA_PRIVATE_KEY', '6Le5PLIgAAAAADNd-a66kfmxhupP-jIPsj2VNFRo')
+    'RECAPTCHA_PRIVATE_KEY', '6LfWlHUiAAAAALM0ohxx1_oLGwPYyGbcHbjJ95MC')
 RECAPTCHA_REQUIRED_SCORE = 0.6
