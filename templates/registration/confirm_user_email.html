@@ -9,7 +9,9 @@
 {% block warn %}!!! В случае, если вы не регистрировали аккаунт на сайте проигнорируйте данное сообщение.{% endblock %}
 
 {% block link %}
-   <a class="mcnButton " title="Восстановить" href="{{ protocol }}://{{ domain }}{% url 'user_confirm' uidb64=uid token=token %}" target="_blank" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">Подтвердить</a>
+   <a class="mcnButton " title="Восстановить" href="{{ protocol }}://{{ domain }}{% url 'user_confirm' uidb64=uid token=token %}"
+   target="_blank"
+   style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;">Подтвердить</a>
 {% endblock %}
 
 {% block code %}{{code}}{% endblock %}

@@ -18,7 +18,6 @@ class AboutView(View, DataMixin):
    template = 'main/index.html'
 
    def get(self, request):
-      request.session['last_visited_page'] = request.path_info
       return render(request, self.template, self.get_user_context(
          title='О клане',
          curr_page_url='about',

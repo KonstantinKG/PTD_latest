@@ -73,6 +73,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
       data['photo'] = photo
       data['position'] = pos_info
       data['message'] = message
-      data['date'] = ms.date_created.strftime("%H:%M")
+      data['date'] = ms.get_date()
 
       return data

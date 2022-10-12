@@ -21,8 +21,7 @@ chatSocket.onmessage = function(e){
    const data = JSON.parse(e.data);
 
    if (data.message) {
-      let html_photo, html_pos,
-         date = adoptDate(data.date);
+      let html_photo, html_pos;
 
       if (data.photo) html_photo =  `<picture><source srcset="${data.photo}" type="image/webp"><img src="${data.photo}" alt=""></picture>`
       else html_photo = `<picture><source srcset="/static/main/img/header/profile.webp" type="image/webp"><img src="/static/main/img/header/profile.png" alt=""></picture>`
@@ -40,7 +39,7 @@ chatSocket.onmessage = function(e){
                      <div class="chat__msg">
                         ${data.message}
                      </div>
-                     <time class="chat__time">${date}</time>
+                     <time class="chat__time">${data.date}</time>
                   </div>
                </div>
             `
@@ -62,7 +61,7 @@ chatSocket.onmessage = function(e){
                      <div class="chat__msg">
                         ${data.message}
                      </div>
-                     <time class="chat__time">${date}</time>
+                     <time class="chat__time">${data.date}</time>
                   </div>
                </div>
             `
@@ -79,7 +78,7 @@ chatSocket.onmessage = function(e){
                   <div class="chat-aside__msg">
                      ${data.message}
                   </div>
-                  <time class="chat-aside__time">${date}</time>
+                  <time class="chat-aside__time">${data.date}</time>
                </div>
             </div>
             `
@@ -100,7 +99,7 @@ chatSocket.onmessage = function(e){
                      <div class="chat-aside__msg">
                         ${data.message}
                      </div>
-                     <time class="chat-aside__time">${date}</time>
+                     <time class="chat-aside__time">${data.date}</time>
                   </div>
                </div>
             `
@@ -154,25 +153,6 @@ chatSocket.onopen = function(e)
 function scrollToBottom(item)
 {
    item.scrollTop = item.scrollHeight;
-}
-
-function adoptDate(date) {
-   if (timezoneOffset != 0) {
-      let [hours, mins] = date.split(':'),
-         diff = +hours - timezoneOffset / 60;
-      
-      console.log(diff, hours);
-
-      if (diff > 24) {hours = diff - 24;}
-      else if (diff < 0) {hours = 24 + diff;}
-      else if (diff == 0 || diff == 24) hours = 0;
-      else hours = diff;
-
-      if (hours < 10) hours = '0' + hours;
-
-      return `${hours}:${mins}`;
-   }  
-   else return date;
 }
 
 // function add_message_listener(form, input)

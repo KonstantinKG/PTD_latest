@@ -27,7 +27,7 @@
 									<div class="chat__msg">
 										{{ message }}
 									</div>
-									<time class="chat__time">{{ message.date_created|date:'G:i' }}</time>
+									<time class="chat__time">{{ message.get_date }}</time>
 								</div>
 							</div>
 						{% else %}
@@ -59,7 +59,7 @@
 									<div class="chat__msg">
 										{{ message }}
 									</div>
-									<time class="chat__time">{{ message.date_created|date:'G:i' }}</time>
+									<time class="chat__time">{{ message.get_date }}</time>
 								</div>
 							</div>
 						{% endif %}

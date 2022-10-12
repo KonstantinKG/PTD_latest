@@ -16,6 +16,8 @@ class DataMixin:
       def get_user_context(self, **kwargs):
             context = kwargs
 
+            self.request.session['last_visited_page'] = self.request.path_info
+
             if self.request.user.is_authenticated:
                   self.request.user.extend_online()
                   context['messages'] = Messages.objects.all().select_related('user', 'user__position')
