@@ -96,20 +96,20 @@ TEMPLATES = [
 # WSGI_APPLICATION = 'PTD.wsgi.application'
 ASGI_APPLICATION = 'PTD.asgi.application'
 
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels.layers.InMemoryChannelLayer"
-#     }
-# }
-
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        },
-    },
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+#         },
+#     },
+# }
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -119,15 +119,14 @@ DB_USER = os.environ.get('DB_USER', 'PTDBaseUser')
 DB_PASSWORD = os.environ.get('DB_NAME', 'Gelo228lox')
 DATABASES = {}
 
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',                      
+        'USER': 'postgres',
+        'PASSWORD': 'Gelo228lox',
         'HOST': 'localhost',
-        # 'PORT': '8000',
+        'PORT': '5432',
     }
 }
 

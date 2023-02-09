@@ -15,6 +15,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.http import HttpResponse, JsonResponse, HttpResponseServerError, HttpResponseRedirect
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import SetPasswordForm
 from django.views.generic import View
 
 UserModel = get_user_model()
