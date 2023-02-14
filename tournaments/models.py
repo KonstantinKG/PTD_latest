@@ -33,7 +33,7 @@ class Tournament(models.Model):
 
    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
 
-   # players = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='tournament', verbose_name='Учавствующие игроки')
+   players = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='tournament', verbose_name='Учавствующие игроки')
 
    table = models.JSONField(blank=True, null=True)
 
