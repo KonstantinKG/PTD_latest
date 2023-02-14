@@ -13,27 +13,20 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 import dj_database_url
 from pathlib import Path
-# from main.models import User
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
     'DJANGO_SECRET_KEY', 'pdk8bcv@oy$o4asp2100ymrv(0y$&qy5#oh-i($2s=j4fa4uvp')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', '') != 'False')
 
-ALLOWED_HOSTS = ['platinum-dragons.herokuapp.com', '127.0.0.1', 'localhost']
-CSRF_TRUSTED_ORIGINS = ['https://platinum-dragons.herokuapp.com']
+ALLOWED_HOSTS = ['45.8.99.141']
+
+CSRF_TRUSTED_ORIGINS = ['https://s3.timeweb.com', 'http://45.8.99.141:8000', 'https://38b67d45-ptd-static.s3.timeweb.com']
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY=None
 
 # Application definition
-CORS_ORIGIN_WHITELIST = ('127.0.0.1:8000',)
+CORS_ORIGIN_WHITELIST = ('127.0.0.1:8000', '45.8.99.141', 'https://s3.timeweb.com', 'http://45.8.99.141:8000')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -48,7 +41,7 @@ INSTALLED_APPS = [
     'tinymce',
     'django_crontab',
     "debug_toolbar",
-
+    'storages',
 
     'main.apps.MainConfig',
     'chat.apps.ChatConfig',
@@ -93,50 +86,35 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'PTD.wsgi.application'
+WSGI_APPLICATION = 'PTD.wsgi.application'
 ASGI_APPLICATION = 'PTD.asgi.application'
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        },
+    },
 }
 
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-#         },
-#     },
-# }
-
 # Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-DB_NAME = os.environ.get('DB_NAME', 'ptd_base')
-DB_USER = os.environ.get('DB_USER', 'PTDBaseUser')
-DB_PASSWORD = os.environ.get('DB_NAME', 'Gelo228lox')
-DATABASES = {}
+DB_NAME = os.environ.get('DB_NAME')
+DB_USER = os.environ.get('DB_USER')
+DB_PASSWORD = os.environ.get('DB_PASSWORD')
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',                      
-        'USER': 'postgres',
-        'PASSWORD': 'Gelo228lox',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': '',
+        'PORT': '',
     }
 }
 
-
-# db_from_env = dj_database_url.config(conn_max_age=5)
-# DATABASES['default'].update(db_from_env)
-
 # Password validation
-# https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -156,11 +134,9 @@ AUTH_USER_MODEL = 'main.User'
 
 AUTHENTICATION_BACKENDS = (
     'main.backends.AuthBackend',
-    # 'django.contrib.auth.backends.ModelBackend'
 )
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.0/topics/i18n/
 
 LANGUAGE_CODE = 'ru'
 
@@ -174,21 +150,28 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.0/howto/static-files/
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL')
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.timeweb.com'
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = os.environ.get('AWS_LOCATION')
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = []
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),
+# ]
 
-# The absolute path to the directory where collectstatic will collect static files for deployment on Heroku.
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
+MEDIA_URL = f'//{AWS_STORAGE_BUCKET_NAME}.s3.timeweb.com/media/'
+MEDIA_ROOT = MEDIA_URL
+TEMP = os.path.join(BASE_DIR, 'temp')
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Sessions settings
@@ -221,35 +204,14 @@ CACHES = {
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-# DEV EMAIL SETTINGS
-
-# EMAIL_HOST = 'smtp.mail.ru'
-# EMAIL_PORT = 2525
-# EMAIL_USE_TLS = True
-# EMAIL_USE_SSL = False
-# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'muhabrot@mail.ru')
-# EMAIL_HOST_PASSWORD = os.environ.get(
-#     'EMAIL_HOST_PASSWORD', 'cD0eEWTPg3gSwUCJKJ3e')
-
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'platinum.dragons.website@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get(
-    'EMAIL_HOST_PASSWORD', 'nfatrtwymmxptqpw')
-
-
-# SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
-# RECAPTCHA_PUBLIC_KEY = os.environ.get(
-#     'RECAPTCHA_PUBLIC_KEY', '6Le5PLIgAAAAAET5Foqsxi5OL2xpo-kQxca30XGF')
-# RECAPTCHA_PRIVATE_KEY = os.environ.get(
-#     'RECAPTCHA_PRIVATE_KEY', '6Le5PLIgAAAAADNd-a66kfmxhupP-jIPsj2VNFRo')
-# RECAPTCHA_REQUIRED_SCORE = 0.6
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
-RECAPTCHA_PUBLIC_KEY = os.environ.get(
-    'RECAPTCHA_PUBLIC_KEY', '6LfWlHUiAAAAAFrbUB_goJdX4xxz9ymuecN6p8ZV')
-RECAPTCHA_PRIVATE_KEY = os.environ.get(
-    'RECAPTCHA_PRIVATE_KEY', '6LfWlHUiAAAAALM0ohxx1_oLGwPYyGbcHbjJ95MC')
+RECAPTCHA_PUBLIC_KEY = str(os.environ.get('RECAPTCHA_PUBLIC_KEY'))
+RECAPTCHA_PRIVATE_KEY = str(os.environ.get('RECAPTCHA_PRIVATE_KEY'))
 RECAPTCHA_REQUIRED_SCORE = 0.6
