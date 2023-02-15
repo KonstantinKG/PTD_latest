@@ -185,7 +185,7 @@ class CreateTeamView(LoginRequiredMixin, CreateView, DataMixin):
       context = super().get_context_data(**kwargs)
       c_def = self.get_user_context(
          title='Команда',
-         users=User.objects.all().exclude(slug=self.request.user.slug)
+         users=User.objects.all().exclude(Q(slug=self.request.user.slug) | Q(is_superuser=True))
       )
       return dict(list(context.items()) + list(c_def.items()))
 
@@ -235,7 +235,7 @@ class editTeamView(LoginRequiredMixin, View, DataMixin):
       return render(request, self.template, self.get_user_context(
          title='Команда',
          mates=teammates,
-         users=User.objects.all().exclude(Q(slug=request.user.slug) | Q(id__in=teammates) | Q(id__in=invitations))
+         users=User.objects.all().exclude(Q(slug=request.user.slug) | Q(id__in=teammates) | Q(id__in=invitations) | Q(is_superuser=True))
       ))
 
    def post(self, request):
