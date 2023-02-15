@@ -7,11 +7,11 @@ const chat_aside_body = document.querySelector('.chat-aside__content')
 const userNickname = JSON.parse(document.getElementById('json-username').textContent);
 let is_scroll = true;
 
-let link = 'wss://' + window.location.host + '/ws/' + 'chat/',
+let link = 'wss://' + window.location.host + ":8001"+ '/ws/' + 'chat/',
    timezoneOffset = new Date().getTimezoneOffset();
 
 if (window.location.protocol == 'https:')
-   link = 'wss://' + window.location.host + '/ws/' + 'chat/'
+   link = 'wss://' + window.location.host + ":8001"+'/ws/' + 'chat/'
    
 const chatSocket = new WebSocket(
    link
