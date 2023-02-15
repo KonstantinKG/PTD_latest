@@ -7,7 +7,7 @@ from main.models import TeamParticapation
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-class Command(BaseCommand):
+class ClearToursCommand(BaseCommand):
    help = 'Проверяет если турнир готов для запуска'
 
    def handle(self, *args, **kwargs):
