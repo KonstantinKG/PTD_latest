@@ -61,9 +61,6 @@ MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
-# White noise уменьшенный размер статических файлов
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
@@ -99,9 +96,9 @@ CHANNEL_LAYERS = {
 }
 
 # Database
-DB_NAME = os.environ.get('DB_NAME')
-DB_USER = os.environ.get('DB_USER')
-DB_PASSWORD = os.environ.get('DB_PASSWORD')
+DB_NAME = str(os.environ.get('DB_NAME'))
+DB_USER = str(os.environ.get('DB_USER'))
+DB_PASSWORD = str(os.environ.get('DB_PASSWORD'))
 
 DATABASES = {
     'default': {
