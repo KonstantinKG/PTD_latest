@@ -187,7 +187,7 @@ STATUS_MSG = {
 # Cron Excercises
 CRONJOBS = [
     ('0 0 * * *', 'main.cron.check_tournaments'),
-    ('59 23 /7 * *', 'main.cron.clear_chat'),
+    ('59 23 * * 1/7', 'main.cron.clear_chat'),
     ('0 0 * * *', 'main.cron.clearsessions'),
 ]
 
