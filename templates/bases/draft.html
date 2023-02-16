@@ -6,14 +6,14 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css?_v=20220901112242" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
 	<link rel="stylesheet" href="{% static 'main/css/style.min.css' %}" type="text/css">
-	<link rel="shortcut icon" href="{% static 'main/img/favicon.ico' %}" >
+	<link rel="shortcut icon" href="{% static 'main/img/favicon.ico' %}">
 
 	<script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
 
 	<style>
-		.grecaptcha-badge { 
+		.grecaptcha-badge {
 			visibility: hidden;
 			opacity: 0;
 		}
@@ -289,8 +289,8 @@
 							<p>Осталось попыток: <span class="tries">5</span></p>
 						</div>
 						<div class="popup__item">
-							<input autocomplete="off" type="text" data-url="{% url 'user_confirm_code' %}" name="code" class="popup__input"
-								placeholder="Введите код">
+							<input autocomplete="off" type="text" data-url="{% url 'user_confirm_code' %}" name="code"
+								class="popup__input" placeholder="Введите код">
 						</div>
 						<div class="popup__error"></div>
 					</div>
@@ -317,8 +317,8 @@
 							<p>Осталось попыток: <span class="tries">5</span></p>
 						</div>
 						<div class="popup__item">
-							<input autocomplete="off" type="text" data-url="{% url 'recovery_confirm_code' %}" name="code" class="popup__input"
-								placeholder="Введите код">
+							<input autocomplete="off" type="text" data-url="{% url 'recovery_confirm_code' %}" name="code"
+								class="popup__input" placeholder="Введите код">
 						</div>
 
 						<div class="popup__error"></div>
@@ -420,14 +420,15 @@
 	{% endblock %}
 
 	{% endblock %}
-	<div class="cookie _hide" >
+	<div class="cookie _hide">
 		<div class="cookie__body">
 			<div class="cookie__message">
-				Продолжая пользоваться сайтом, вы соглашаетесь на использование файлов cookie. Более подробную информацию можно найти в. <a class="cookie__link" href="{% url 'cookie' %}">Политике cookie файлов</a>
+				Продолжая пользоваться сайтом, вы соглашаетесь на использование файлов cookie. Более подробную информацию
+				можно найти в. <a class="cookie__link" href="{% url 'cookie' %}">Политике cookie файлов</a>
 			</div>
 			<div class="cookie__buttons">
 				<button type="button" class="cookie__button"></button>
-			</div>	
+			</div>
 		</div>
 	</div>
 
@@ -439,7 +440,7 @@
 	{% block extrascripts %}
 	{% endblock %}
 
-	<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js?_v=20220618212311"></script>
+	<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
 	<script src="{% static 'main/js/app.min.js' %}"></script>
 
 	{% if user.is_authenticated %}
