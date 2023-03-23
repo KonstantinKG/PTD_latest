@@ -84,28 +84,28 @@ class Tournament(models.Model):
          self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['open'], code=Status.OPEN, priority=1)[0]
          return
 
-      status = tour.status
+      status = tour[0].status
       if status.code == Status.OPEN or status.code == Status.CLOSING:
          self._check_soon_start()
          self._check_open_spaces()
 
-         if self.typo != tour.typo:
-            self._delete_particapants(tour)
+         if self.typo != tour[0].typo:
+            self._delete_particapants(tour[0])
 
       elif status.code == Status.PLAYING:
-         if not self._check_table_changes(tour):
+         if not self._check_table_changes(tour[0]):
             raise ValidationError({'__all__': 'Изменение турнира невозможно во время когда турнир активен'})
 
       elif status.code == Status.CLOSED:
          if status.name == settings.STATUS_MSG['failed']:
             
-            if self.typo != tour.typo:
-               self._delete_particapants(tour)
+            if self.typo != tour[0].typo:
+               self._delete_particapants(tour[0])
 
             if not self._check_soon_start():
                self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['open'], code=Status.OPEN, priority=1)[0]
          
-         elif not self._check_table_changes(tour):
+         elif not self._check_table_changes(tour[0]):
             raise ValidationError({'__all__': 'Изменение турнира после его удачного завершения невозможно'})
 
    # Добавляет и убирает очки победителям
@@ -161,7 +161,7 @@ class Tournament(models.Model):
       saving_table = json.loads(self.table)
          
       if (tour.table is not None):
-         existing_table = json.loads(tour[0].table)
+         existing_table = json.loads(tour.table)
 
          if existing_table == saving_table:
             return False
