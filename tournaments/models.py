@@ -75,12 +75,10 @@ class Tournament(models.Model):
       return False
 
    def clean(self):
-      return
-
       if (self.places < self.min_places):
          self.places = self.min_places
       
-      tour = Tournament.objects.filter(slug=self.slug) 
+      tour = Tournament.objects.filter(slug=self.slug)
 
       if (len(tour) == 0):
          self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['open'], code=Status.OPEN, priority=1)[0]

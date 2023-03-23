@@ -53,13 +53,10 @@ class Command(BaseCommand):
       # Проверяем если кол-во игроков являются степенью двойки
       p_amount = len(particapants)
       is2 = self._check2rec(p_amount)
-      print(p_amount)
-      print(is2)
       # Если являются степенью двойки то кол-во групп это половина от участников
       # Иначе находится ближайшее число степени двойки
       groups = int(p_amount / 2 if is2 else self._find_closest_2rec(p_amount))
-      print(groups)
-
+      
       return self._get_tour_table(particapants, groups, p_amount, is2)
 
 
