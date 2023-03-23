@@ -48,7 +48,9 @@
                <form action="{{ tour.get_absolute_url }}" class="info-tournament__form">
                   {% csrf_token %}
                   <input type="hidden" value="{{ tour.typo }}" name="typo">
-                  {% if tour.check_is_started %}
+                  {% if tour.check_is_started and user not in players.data %}
+                     <div class="info-tournament__note">Турнир уже начался</div>
+                  {% elif tour.check_is_started %}
                      <div class="info-tournament__note">Нельзя покинуть турнир после его начала</div>
                   {% elif tour.check_is_closed %}
                      <div class="info-tournament__note">Удаление участников произойдет через некоторое время после закрытия турнира</div>
