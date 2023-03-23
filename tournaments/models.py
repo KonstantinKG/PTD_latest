@@ -84,28 +84,28 @@ class Tournament(models.Model):
          self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['open'], code=Status.OPEN, priority=1)[0]
          return
 
-      status = tour[0].status
+      status = tour.status
       if status.code == Status.OPEN or status.code == Status.CLOSING:
          self._check_soon_start()
          self._check_open_spaces()
 
-         if self.typo != tour[0].typo:
-            self._delete_particapants(tour[0])
+         if self.typo != tour.typo:
+            self._delete_particapants(tour)
 
       elif status.code == Status.PLAYING:
-         if not self._check_table_changes(tour[0]):
+         if not self._check_table_changes(tour):
             raise ValidationError({'__all__': 'Изменение турнира невозможно во время когда турнир активен'})
 
       elif status.code == Status.CLOSED:
          if status.name == settings.STATUS_MSG['failed']:
             
-            if self.typo != tour[0].typo:
-               self._delete_particapants(tour[0])
+            if self.typo != tour.typo:
+               self._delete_particapants(tour)
 
             if not self._check_soon_start():
                self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['open'], code=Status.OPEN, priority=1)[0]
          
-         elif not self._check_table_changes(tour[0]):
+         elif not self._check_table_changes(tour):
             raise ValidationError({'__all__': 'Изменение турнира после его удачного завершения невозможно'})
 
    # Добавляет и убирает очки победителям
