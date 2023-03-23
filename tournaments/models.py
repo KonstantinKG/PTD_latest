@@ -75,6 +75,8 @@ class Tournament(models.Model):
       return False
 
    def clean(self):
+      return
+
       if (self.places < self.min_places):
          self.places = self.min_places
       
@@ -158,8 +160,9 @@ class Tournament(models.Model):
 
    # Проверяет если в турнирной таблице произошли изменения
    def _check_table_changes(self, tour):
-      return False
-      
+      if (self.table is None):
+         return False
+
       saving_table = json.loads(self.table)
 
       if (tour.table is not None):
