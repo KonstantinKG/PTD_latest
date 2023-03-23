@@ -51,14 +51,12 @@ class Command(BaseCommand):
 
    def _generate_tour_table_json(self, particapants):
       # Проверяем если кол-во игроков являются степенью двойки
-      (p_amount, is2) = self._check2rec(len(particapants))
-      print(p_amount)
-      print(len(particapants))
+      p_amount = len(particapants)
+      is2 = self._check2rec(p_amount)
 
       # Если являются степенью двойки то кол-во групп это половина от участников
       # Иначе находится ближайшее число степени двойки
       groups = p_amount / 2 if is2 else self._find_closest_2rec(p_amount)
-      print(groups)
 
       return self._get_tour_table(particapants, groups, p_amount, is2)
 
@@ -177,14 +175,10 @@ class Command(BaseCommand):
 
    # Проверка на степень двойки
    def _check2rec(self, num):
-      print("Num:", num)
-      print("Num=1:", num==1)
       if num == 1:
-         return (num, True)
-      
-      print("Num&1:", num&1)
+         return True
       if num & 1:
-         return (num, False)
+         return False
       
       return self._check2rec(num >> 1)
 
