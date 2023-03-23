@@ -25,7 +25,7 @@ class TournamentAdmin(admin.ModelAdmin):
    list_editable = ('mode', 'typo')
    list_filter = ('mode', 'typo', 'status', 'date_start', 'date_end')
    ordering = ("date_start", "date_end", 'status__priority')
-   readonly_fields = ('get_html_photo', 'status')
+   readonly_fields = ('get_html_photo',)
    prepopulated_fields = {"slug": ("title",)}
 
    fieldsets = (
@@ -47,11 +47,6 @@ class TournamentAdmin(admin.ModelAdmin):
       ('Участники', {
          'fields': (
             'players',
-         ),
-      }),
-      ('Турнирная таблица', {
-         'fields': (
-            'table',
          ),
       }),
    )
