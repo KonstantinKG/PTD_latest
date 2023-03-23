@@ -104,10 +104,10 @@ class Command(BaseCommand):
       stage = []
 
       # Если кол-во игроков не было степенью двойки
-      # То мы должны перекинуть игроков из полупустых групп на вторую стадию 
+      # То мы должны перекинуть игроков из полупустых групп на вторую стадию
+      groups //= 2
       if not is2:
-         groups //= 2
-         
+
          for i in range(groups):
             group_upper = body['stages'][0][i * 2]
             group_lower = body['stages'][0][i * 2 + 1]
@@ -120,7 +120,7 @@ class Command(BaseCommand):
             if group_upper['player2'] == '':
                para['player1'] = group_upper['player1']
             if group_lower['player2'] == '':
-               para['player2'] = group_lower['player1'] 
+               para['player2'] = group_lower['player1']
 
          stage.append(para)
 
