@@ -160,7 +160,7 @@ class Tournament(models.Model):
    def _check_table_changes(self, tour):
       saving_table = json.loads(self.table)
          
-      if (tour[0].table is not None):
+      if (tour.table is not None):
          existing_table = json.loads(tour[0].table)
 
          if existing_table == saving_table:
