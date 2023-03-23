@@ -158,7 +158,7 @@ class Tournament(models.Model):
 
    # Проверяет если в турнирной таблице произошли изменения
    def _check_table_changes(self, tour):
-      if (self.table is None):
+      if (self.table):
          return False
       saving_table = json.loads(self.table)
 
