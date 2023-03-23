@@ -19,7 +19,7 @@ class TournamentFormAdmin(forms.ModelForm):
 class TournamentAdmin(admin.ModelAdmin):
    form = TournamentFormAdmin
 
-   list_display = ('id', 'title', 'mode', 'typo', 'status', 'date_start', 'date_end', 'table')
+   list_display = ('id', 'title', 'mode', 'typo', 'status', 'date_start', 'date_end')
    list_display_links = ('id', 'title')
    search_fields = ('title',)
    list_editable = ('mode', 'typo')
@@ -47,6 +47,11 @@ class TournamentAdmin(admin.ModelAdmin):
       ('Участники', {
          'fields': (
             'players',
+         ),
+      }),
+      ('Турнирная таблица', {
+         'fields': (
+            'table',
          ),
       }),
    )
