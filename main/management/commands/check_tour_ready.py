@@ -177,9 +177,12 @@ class Command(BaseCommand):
 
    # Проверка на степень двойки
    def _check2rec(self, num):
+      print("Num:", num)
+      print("Num=1:", num==1)
       if num == 1:
          return (num, True)
       
+      print("Num&1:", num&1)
       if num & 1:
          return (num, False)
       
