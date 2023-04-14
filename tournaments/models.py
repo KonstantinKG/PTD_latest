@@ -119,11 +119,14 @@ class Tournament(models.Model):
          val = -1 if desc else 1
          if key == 'gold':
             user.gold += val
+            if user.gold < 0: user.gold = 0
          elif key == 'silver':
             user.silver += val
+            if user.silver < 0: user.silver = 0
          elif key == 'bronze':
             user.bronze += val
-         print(user.gold, user.silver, user.bronze)
+            if user.bronze < 0: user.bronze = 0
+            
          user.save()
 
    def _delete_particapants(self, tour):
