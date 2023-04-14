@@ -123,17 +123,8 @@ class Tournament(models.Model):
             user.silver += val
          elif key == 'bronze':
             user.bronze += val
-
-         self._normalize_points_to_zero(user)
+         print(user.gold, user.silver, user.bronze)
          user.save()
-
-   def _normalize_points_to_zero(user):
-      if user.gold < 0:
-         user.gold = 0
-      elif user.silver < 0:
-         user.silver = 0
-      elif user.bronze < 0:
-         user.bronze = 0
 
    def _delete_particapants(self, tour):
       # Если соло турнир удаляем игроков
