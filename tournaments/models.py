@@ -124,7 +124,16 @@ class Tournament(models.Model):
          elif key == 'bronze':
             user.bronze += val
 
+         self._normalize_points_to_zero(user)
          user.save()
+
+   def _normalize_points_to_zero(user):
+      if user.gold < 0:
+         user.gold = 0
+      elif user.silver < 0:
+         user.silver = 0
+      elif user.bronze < 0:
+         user.bronze = 0
 
    def _delete_particapants(self, tour):
       # Если соло турнир удаляем игроков
@@ -188,7 +197,6 @@ class Tournament(models.Model):
             self._set_points(old_winners, True)
 
          if new_winners['gold'] != '' and new_winners['silver'] != '' and new_winners['bronze'] != '':
-            print("status")
             self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['finished'], code=Status.CLOSED, priority=5)[0]
             self._set_points(new_winners)
 
