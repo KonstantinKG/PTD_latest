@@ -81,10 +81,12 @@ class Tournament(models.Model):
       tour = Tournament.objects.filter(slug=self.slug)
 
       if (len(tour) == 0):
+         print("len")
          self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['open'], code=Status.OPEN, priority=1)[0]
          return
 
       status = tour[0].status
+      print("Open")
       if status.code == Status.OPEN or status.code == Status.CLOSING:
          print("1")
          self._check_soon_start()
