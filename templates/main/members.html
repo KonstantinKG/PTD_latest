@@ -43,7 +43,7 @@
 					{% for user in clan.users %}
 					<li class="clan__item _table-item">
 							<div class="clan__info">
-								<a href="" class="clan__data clan__data_nickname">{{ user.nickname }}</a>
+								<a href="{{ user.get_absolute_url }}" class="clan__data clan__data_nickname">{{ user.nickname }}</a>
 								<div class="clan__data clan__data_name">
 									{% if user.name %} {{ user.name}}
 									{% else %} - {% endif %}

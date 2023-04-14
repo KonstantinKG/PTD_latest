@@ -86,6 +86,7 @@ class Tournament(models.Model):
 
       status = tour[0].status
       if status.code == Status.OPEN or status.code == Status.CLOSING:
+         print("1")
          self._check_soon_start()
          self._check_open_spaces()
 
@@ -93,10 +94,12 @@ class Tournament(models.Model):
             self._delete_particapants(tour[0])
 
       elif status.code == Status.PLAYING:
+         print("2")
          if not self._check_table_changes(tour[0]):
             raise ValidationError({'__all__': 'Изменение турнира невозможно во время когда турнир активен'})
 
       elif status.code == Status.CLOSED:
+         print("3")
          if status.name == settings.STATUS_MSG['failed']:
             
             if self.typo != tour[0].typo:
@@ -184,6 +187,7 @@ class Tournament(models.Model):
             self._set_points(old_winners, True)
 
          if new_winners['gold'] != '' and new_winners['silver'] != '' and new_winners['bronze'] != '':
+            print("status")
             self.status = Status.objects.get_or_create(name=settings.STATUS_MSG['finished'], code=Status.CLOSED, priority=5)[0]
             self._set_points(new_winners)
 
