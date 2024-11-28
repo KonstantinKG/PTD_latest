@@ -24,5 +24,5 @@ docker-compose exec web python manage.py migrate
 
 **3 Creates superuser**
 ```commandline
-docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py createsuperuser
 ```
