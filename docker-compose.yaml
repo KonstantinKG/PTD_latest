@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  web:
+    build:
+      dockerfile: Dockerfile
+    container_name: ptd_web
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    container_name: ptd_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=public
+    ports:
+      - "5444:5432"
+
+volumes:
+  postgres_data:
